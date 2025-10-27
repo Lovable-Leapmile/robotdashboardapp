@@ -1,17 +1,67 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import loginIllustration from "@/assets/login.gif";
 import logo from "@/assets/logo.png";
 
 const LoginForm = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt with:", { mobileNumber, password });
+    
+    if (mobileNumber.length !== 10) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Phone number must be exactly 10 digits",
+        variant: "destructive",
+      });
+      phoneInputRef.current?.focus();
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch(
+        `https://amsstores1.leapmile.com/user/validate?user_phone=${mobileNumber}&password=${password}`
+      );
+      const data = await response.json();
+
+      if (response.ok && data.user_id && data.user_name) {
+        localStorage.setItem("user_id", data.user_id);
+        localStorage.setItem("user_name", data.user_name);
+        navigate("/home");
+      } else {
+        toast({
+          title: "Login Failed",
+          description: data.message || "Invalid credentials",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          phoneInputRef.current?.focus();
+        }, 2000);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to connect to server",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        phoneInputRef.current?.focus();
+      }, 2000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -54,12 +104,20 @@ const LoginForm = () => {
               Enter Mobile Number
             </Label>
             <Input
+              ref={phoneInputRef}
               id="mobile"
               type="tel"
               value={mobileNumber}
-              onChange={(e) => setMobileNumber(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '');
+                if (value.length <= 10) {
+                  setMobileNumber(value);
+                }
+              }}
               className="w-full rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all py-6 text-base"
               placeholder="Enter your mobile number"
+              minLength={10}
+              maxLength={10}
               required
             />
           </div>
@@ -73,9 +131,15 @@ const LoginForm = () => {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value.length <= 10) {
+                  setPassword(value);
+                }
+              }}
               className="w-full rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all py-6 text-base"
               placeholder="Enter your password"
+              maxLength={10}
               required
             />
           </div>
@@ -83,10 +147,11 @@ const LoginForm = () => {
           {/* Login Button */}
           <Button
             type="submit"
+            disabled={isLoading}
             className="w-full rounded-xl py-6 font-semibold text-base transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/30 mt-8"
             style={{ backgroundColor: '#351C75' }}
           >
-            Login
+            {isLoading ? "Logging in..." : "Login"}
           </Button>
         </form>
       </div>
