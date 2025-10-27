@@ -40,10 +40,10 @@ const Home = () => {
             <img src={whiteLogo} alt="Logo" style={{ width: '75px' }} />
           </div>
           <nav className="flex items-center gap-[10px]">
-            <span className={`text-white text-base cursor-pointer hover:opacity-80 ${selectedTab ? 'font-semibold' : ''}`}>Configuration</span>
-            <span className="text-white text-base cursor-pointer hover:opacity-80">Tasks</span>
-            <span className="text-white text-base cursor-pointer hover:opacity-80">Camera</span>
-            <span className="text-white text-base cursor-pointer hover:opacity-80">Reports</span>
+            <span className={`text-base cursor-pointer hover:opacity-80 ${selectedTab ? 'font-semibold' : ''}`} style={{ color: selectedTab ? 'white' : '#80ffffff' }}>Configuration</span>
+            <span className="text-base cursor-pointer hover:opacity-80" style={{ color: '#80ffffff' }}>Tasks</span>
+            <span className="text-base cursor-pointer hover:opacity-80" style={{ color: '#80ffffff' }}>Camera</span>
+            <span className="text-base cursor-pointer hover:opacity-80" style={{ color: '#80ffffff' }}>Reports</span>
           </nav>
         </div>
         
