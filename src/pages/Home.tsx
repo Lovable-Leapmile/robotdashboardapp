@@ -74,12 +74,10 @@ const Home = () => {
         style={{ backgroundColor: '#eeeeee', height: '55px' }}
       >
         <span 
-          className="text-sm cursor-pointer px-5 py-2 rounded-md font-semibold transition-all relative"
+          className="text-sm cursor-pointer px-5 py-2 rounded-md font-semibold transition-all"
           style={{ 
             backgroundColor: '#351C75', 
-            color: 'white',
-            boxShadow: '0 4px 12px rgba(53, 28, 117, 0.25)',
-            transform: 'translateY(-2px)'
+            color: 'white'
           }}
         >
           Robot
