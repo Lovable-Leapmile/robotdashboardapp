@@ -86,15 +86,12 @@ const LoginForm = () => {
         {/* Login Illustration and Title - Side by Side with Enhanced Design */}
         <div className="relative bg-gradient-to-b from-primary/5 to-transparent pt-8 pb-6">
           <div className="flex items-center justify-center gap-6">
-            <div className="relative animate-scale-in">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30 blur-2xl rounded-full animate-pulse"></div>
-              <div className="relative z-10 bg-white/80 rounded-full p-3 shadow-lg">
-                <img 
-                  src={loginIllustration} 
-                  alt="Login illustration" 
-                  className="w-20 h-20 object-contain hover:scale-110 transition-transform duration-300"
-                />
-              </div>
+            <div className="animate-scale-in">
+              <img 
+                src={loginIllustration} 
+                alt="Login illustration" 
+                className="w-20 h-20 object-contain hover:scale-110 transition-transform duration-300"
+              />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent animate-fade-in">
               Login
