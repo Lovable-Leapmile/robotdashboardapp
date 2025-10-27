@@ -1,11 +1,32 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import LoginForm from "@/components/LoginForm";
+import backgroundImage from "@/assets/dashboard_login_bg.png";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+        style={{ 
+          backgroundImage: `url(${backgroundImage})`,
+          width: '100%',
+          height: '100vh'
+        }}
+      />
+      
+      {/* Semi-transparent Overlay */}
+      <div 
+        className="absolute inset-0 w-full h-full"
+        style={{ 
+          backgroundColor: '#1a351c75',
+          width: '100%',
+          height: '100%'
+        }}
+      />
+
+      {/* Login Form Container */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen py-8">
+        <LoginForm />
       </div>
     </div>
   );
