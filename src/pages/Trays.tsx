@@ -101,7 +101,7 @@ const Trays = () => {
       }
 
       const data = await response.json();
-      setRowData(data);
+      setRowData(data.records || []);
     } catch (error) {
       toast({
         title: "Error",
