@@ -150,7 +150,7 @@ All colors MUST be HSL.
   height: 50px !important;
   min-height: 50px !important;
   max-height: 50px !important;
-  line-height: 50px !important;
+  line-height: normal !important;
 }
 
 .ag-theme-quartz .ag-row {
