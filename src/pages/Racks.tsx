@@ -4,6 +4,7 @@ import AppHeader from "@/components/AppHeader";
 
 const Racks = () => {
   const [userName, setUserName] = useState("");
+  const [numRacks, setNumRacks] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,13 +39,18 @@ const Racks = () => {
       // Store robot configuration globally
       if (data.records && data.records.length > 0) {
         const robotConfig = data.records[0];
+        const numRacksValue = robotConfig.robot_num_racks || 0;
+        
         localStorage.setItem("robot_num_rows", robotConfig.robot_num_rows?.toString() || "0");
-        localStorage.setItem("robot_num_racks", robotConfig.robot_num_racks?.toString() || "0");
+        localStorage.setItem("robot_num_racks", numRacksValue.toString());
         localStorage.setItem("robot_num_slots", robotConfig.robot_num_slots?.toString() || "0");
         localStorage.setItem("robot_num_depths", robotConfig.robot_num_depths?.toString() || "0");
+        
+        setNumRacks(numRacksValue);
+        
         console.log("Robot configuration stored globally:", {
           robot_num_rows: robotConfig.robot_num_rows,
-          robot_num_racks: robotConfig.robot_num_racks,
+          robot_num_racks: numRacksValue,
           robot_num_slots: robotConfig.robot_num_slots,
           robot_num_depths: robotConfig.robot_num_depths
         });
@@ -58,8 +64,27 @@ const Racks = () => {
     <div className="min-h-screen" style={{ backgroundColor: '#fafafa' }}>
       <AppHeader selectedTab="Racks" />
       
+      <div style={{ height: '10px' }} />
+      
       <main className="p-6">
-        <h1 className="text-2xl font-bold" style={{ color: '#351C75' }}>Racks Management</h1>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(40px,40px))] gap-3 justify-start">
+          {Array.from({ length: numRacks + 1 }, (_, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-center font-medium text-sm transition-all hover:scale-105 cursor-pointer"
+              style={{
+                width: '40px',
+                height: '40px',
+                backgroundColor: '#351C75',
+                color: 'white',
+                borderRadius: '4px',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+              }}
+            >
+              {index}
+            </div>
+          ))}
+        </div>
       </main>
     </div>
   );
