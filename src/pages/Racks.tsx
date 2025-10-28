@@ -1,11 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppHeader from "@/components/AppHeader";
+import blockImg from "@/assets/block.png";
+import stationImg from "@/assets/station.png";
+import trayImg from "@/assets/tray.png";
+
+interface Slot {
+  slot_name: string;
+  slot_status: string;
+  tags: string[];
+  tray_id: string | null;
+}
 
 const Racks = () => {
   const [userName, setUserName] = useState("");
   const [numRacks, setNumRacks] = useState(0);
   const [selectedRack, setSelectedRack] = useState<number | null>(null);
+  const [row1Depth1Slots, setRow1Depth1Slots] = useState<Slot[]>([]);
+  const [row1Depth0Slots, setRow1Depth0Slots] = useState<Slot[]>([]);
+  const [row0Depth1Slots, setRow0Depth1Slots] = useState<Slot[]>([]);
+  const [row0Depth0Slots, setRow0Depth0Slots] = useState<Slot[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +41,12 @@ const Racks = () => {
     
     fetchRobotConfig();
   }, [navigate]);
+
+  useEffect(() => {
+    if (selectedRack !== null) {
+      fetchAllSlots(selectedRack);
+    }
+  }, [selectedRack]);
 
   const fetchRobotConfig = async () => {
     try {
@@ -68,10 +88,74 @@ const Racks = () => {
     }
   };
 
+  const fetchAllSlots = async (rackValue: number) => {
+    const authToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2wiOiJhZG1pbiIsImV4cCI6MTkwMDY1MzE0M30.asYhgMAOvrau4G6LI4V4IbgYZ022g_GX0qZxaS57GQc";
+    
+    try {
+      const [res1, res2, res3, res4] = await Promise.all([
+        fetch(`https://amsstores1.leapmile.com/robotmanager/slots?row=1&depth=1&rack=${rackValue}`, {
+          headers: { "Authorization": authToken, "Content-Type": "application/json" }
+        }),
+        fetch(`https://amsstores1.leapmile.com/robotmanager/slots?row=1&depth=0&rack=${rackValue}`, {
+          headers: { "Authorization": authToken, "Content-Type": "application/json" }
+        }),
+        fetch(`https://amsstores1.leapmile.com/robotmanager/slots?row=0&depth=1&rack=${rackValue}`, {
+          headers: { "Authorization": authToken, "Content-Type": "application/json" }
+        }),
+        fetch(`https://amsstores1.leapmile.com/robotmanager/slots?row=0&depth=0&rack=${rackValue}`, {
+          headers: { "Authorization": authToken, "Content-Type": "application/json" }
+        })
+      ]);
+
+      const [data1, data2, data3, data4] = await Promise.all([
+        res1.json(),
+        res2.json(),
+        res3.json(),
+        res4.json()
+      ]);
+
+      setRow1Depth1Slots(data1.records || []);
+      setRow1Depth0Slots(data2.records || []);
+      setRow0Depth1Slots(data3.records || []);
+      setRow0Depth0Slots(data4.records || []);
+    } catch (error) {
+      console.error("Error fetching slots:", error);
+    }
+  };
+
   const handleRackSelect = (index: number) => {
     setSelectedRack(index);
     localStorage.setItem("selected_rack", index.toString());
-    console.log("Selected rack:", index);
+  };
+
+  const SlotBox = ({ slot }: { slot: Slot }) => {
+    if (slot.slot_status === "inactive") {
+      return (
+        <div className="relative" style={{ width: '150px', height: '50px' }}>
+          <img src={blockImg} alt="Inactive" className="w-full h-full object-cover rounded" />
+          <div className="absolute inset-0 flex items-center justify-center text-xs font-medium text-white">
+            {slot.slot_name}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div 
+        className="relative flex flex-col items-center justify-center border border-gray-300 rounded bg-white"
+        style={{ width: '150px', height: '50px' }}
+      >
+        <div className="text-xs font-medium text-gray-700">{slot.slot_name}</div>
+        <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center gap-0.5 pb-1">
+          {slot.tags?.includes("station") && (
+            <img src={stationImg} alt="Station" style={{ width: '146px', height: '10px' }} />
+          )}
+          {slot.tray_id && (
+            <img src={trayImg} alt="Tray" style={{ width: '146px', height: '10px' }} />
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -104,30 +188,57 @@ const Racks = () => {
           ))}
         </div>
 
-        <div className="flex justify-center gap-6 mt-8">
-          <div className="flex flex-col items-center">
-            <div 
-              className="font-medium text-lg px-6 py-3 rounded-lg"
-              style={{
-                backgroundColor: '#351C75',
-                color: 'white'
-              }}
-            >
-              Row 0
+        {selectedRack !== null && (
+          <div className="flex justify-center gap-6 mt-8">
+            {/* Row 1 Column */}
+            <div className="flex flex-col items-center">
+              <div 
+                className="font-medium text-lg px-6 py-3 rounded-lg mb-4"
+                style={{ backgroundColor: '#351C75', color: 'white' }}
+              >
+                Row 1
+              </div>
+              <div className="flex flex-col gap-2.5">
+                {/* Depth 1 */}
+                <div className="flex gap-2 flex-wrap justify-center">
+                  {row1Depth1Slots.map((slot, idx) => (
+                    <SlotBox key={`r1d1-${idx}`} slot={slot} />
+                  ))}
+                </div>
+                {/* Depth 0 */}
+                <div className="flex gap-2 flex-wrap justify-center">
+                  {row1Depth0Slots.map((slot, idx) => (
+                    <SlotBox key={`r1d0-${idx}`} slot={slot} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Row 0 Column */}
+            <div className="flex flex-col items-center">
+              <div 
+                className="font-medium text-lg px-6 py-3 rounded-lg mb-4"
+                style={{ backgroundColor: '#351C75', color: 'white' }}
+              >
+                Row 0
+              </div>
+              <div className="flex flex-col gap-2.5">
+                {/* Depth 1 */}
+                <div className="flex gap-2 flex-wrap justify-center">
+                  {row0Depth1Slots.map((slot, idx) => (
+                    <SlotBox key={`r0d1-${idx}`} slot={slot} />
+                  ))}
+                </div>
+                {/* Depth 0 */}
+                <div className="flex gap-2 flex-wrap justify-center">
+                  {row0Depth0Slots.map((slot, idx) => (
+                    <SlotBox key={`r0d0-${idx}`} slot={slot} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col items-center">
-            <div 
-              className="font-medium text-lg px-6 py-3 rounded-lg"
-              style={{
-                backgroundColor: '#351C75',
-                color: 'white'
-              }}
-            >
-              Row 1
-            </div>
-          </div>
-        </div>
+        )}
       </main>
     </div>
   );
