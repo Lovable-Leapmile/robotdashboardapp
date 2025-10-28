@@ -81,7 +81,7 @@ const Racks = () => {
       <div style={{ height: '10px' }} />
       
       <main className="p-6">
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(40px,40px))] gap-3 justify-start">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(40px,40px))] gap-3 justify-center">
           {Array.from({ length: numRacks + 1 }, (_, index) => (
             <div
               key={index}
