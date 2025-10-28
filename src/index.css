@@ -111,12 +111,17 @@ All colors MUST be HSL.
 }
 
 /* AG Grid custom styles */
+.ag-theme-quartz {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
 .ag-theme-quartz .ag-header-cell-label {
   font-weight: 700;
 }
 
 .ag-theme-quartz .ag-header-cell {
-  padding: 16px 12px !important;
+  padding: 20px 12px !important;
   line-height: 1.5;
 }
 
