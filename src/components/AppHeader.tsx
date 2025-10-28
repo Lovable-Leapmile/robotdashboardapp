@@ -223,6 +223,7 @@ const AppHeader = ({ selectedTab, isTasksPage, activeTaskTab, isMonitorPage }: A
               style={{ color: '#555' }}
               onClick={() => {
                 if (tab === "Pending") navigate("/pending");
+                if (tab === "Tray Ready") navigate("/tray-ready");
                 // Add routes for other tabs when they are created
               }}
             >

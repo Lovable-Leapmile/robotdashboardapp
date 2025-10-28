@@ -14,6 +14,7 @@ import ApkLink from "./pages/ApkLink";
 import Monitor from "./pages/Monitor";
 import Tasks from "./pages/Tasks";
 import Pending from "./pages/Pending";
+import TrayReady from "./pages/TrayReady";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/monitor" element={<Monitor />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/pending" element={<Pending />} />
+          <Route path="/tray-ready" element={<TrayReady />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
