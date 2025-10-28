@@ -225,7 +225,7 @@ const AppHeader = ({ selectedTab, isTasksPage, activeTaskTab, isMonitorPage }: A
                 if (tab === "Pending") navigate("/pending");
                 if (tab === "Tray Ready") navigate("/tray-ready");
                 if (tab === "Inprogress") navigate("/inprogress");
-                // Add routes for other tabs when they are created
+                if (tab === "Completed") navigate("/completed");
               }}
             >
               {tab}

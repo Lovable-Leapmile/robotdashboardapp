@@ -16,6 +16,7 @@ import Tasks from "./pages/Tasks";
 import Pending from "./pages/Pending";
 import TrayReady from "./pages/TrayReady";
 import Inprogress from "./pages/Inprogress";
+import Completed from "./pages/Completed";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/pending" element={<Pending />} />
           <Route path="/tray-ready" element={<TrayReady />} />
           <Route path="/inprogress" element={<Inprogress />} />
+          <Route path="/completed" element={<Completed />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
