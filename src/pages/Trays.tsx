@@ -43,7 +43,10 @@ const Trays = () => {
       sortable: true, 
       filter: true, 
       flex: 1.5,
-      valueFormatter: (params) => params.value ? params.value.join(", ") : ""
+      valueFormatter: (params) => {
+        if (!params.value || params.value.length === 0) return "N/A";
+        return params.value.join(", ");
+      }
     },
     { 
       field: "created_at", 

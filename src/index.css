@@ -122,7 +122,7 @@ All colors MUST be HSL.
 }
 
 .ag-theme-quartz .ag-header-cell {
-  padding: 18px 16px !important;
+  padding: 18px 12px !important;
   line-height: 1.5;
   color: white !important;
 }
