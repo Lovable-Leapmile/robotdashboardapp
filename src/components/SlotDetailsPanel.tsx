@@ -47,7 +47,7 @@ const SlotDetailsPanel = ({ slotDetails, isVisible }: SlotDetailsPanelProps) => 
         style={{ 
           width: '280px',
           marginLeft: '30px',
-          borderRadius: '10px'
+          borderRadius: '5px'
         }}
       >
         <div className="text-xl font-semibold mb-6" style={{ color: '#351c75' }}>
