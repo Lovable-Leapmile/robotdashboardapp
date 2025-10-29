@@ -44,19 +44,12 @@ const SlotDetailsPanel = ({ slotDetails, isVisible, onClose }: SlotDetailsPanelP
   return (
     <>
       <div 
-        className="animate-slide-in-right relative"
+        className="animate-slide-in-right"
         style={{ 
           width: '320px',
           marginLeft: '30px'
         }}
       >
-        <button
-          onClick={onClose}
-          className="absolute -right-2 -top-2 p-1.5 hover:bg-muted rounded-md transition-colors z-10 bg-background border border-border shadow-sm"
-          aria-label="Close details"
-        >
-          <X className="h-4 w-4" style={{ color: '#351c75' }} />
-        </button>
         <div className="space-y-4">
           {/* Slot ID Section */}
           <Card>
@@ -129,6 +122,13 @@ const SlotDetailsPanel = ({ slotDetails, isVisible, onClose }: SlotDetailsPanelP
                   >
                     <QrCode className="h-5 w-5" style={{ color: '#351c75' }} />
                   </button>
+                  <button
+                    onClick={onClose}
+                    className="p-1.5 hover:bg-muted rounded-md transition-colors flex-shrink-0"
+                    aria-label="Close details"
+                  >
+                    <X className="h-4 w-4" style={{ color: '#351c75' }} />
+                  </button>
                 </div>
               </CardContent>
             </Card>
@@ -165,7 +165,7 @@ const SlotDetailsPanel = ({ slotDetails, isVisible, onClose }: SlotDetailsPanelP
 
       {/* QR Code Dialog */}
       <Dialog open={qrDialogOpen} onOpenChange={setQrDialogOpen}>
-        <DialogContent className="sm:max-w-sm p-0 gap-0">
+        <DialogContent className="p-0 gap-0" style={{ width: 'fit-content' }}>
           <div 
             className="flex flex-col items-center justify-center rounded-lg" 
             style={{ 
