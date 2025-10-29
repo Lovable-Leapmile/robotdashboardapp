@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { ScrollText, Activity, LogOut } from "lucide-react";
+import { ScrollText, Activity, LogOut, Camera } from "lucide-react";
 import whiteLogo from "@/assets/white_logo.png";
 import { useState } from "react";
+import html2canvas from "html2canvas";
 import {
   Tooltip,
   TooltipContent,
@@ -63,6 +64,27 @@ const AppHeader = ({ selectedTab, isTasksPage, activeTaskTab, isMonitorPage, isC
     }
   };
 
+  const handleScreenshot = async () => {
+    try {
+      const canvas = await html2canvas(document.body, {
+        allowTaint: true,
+        useCORS: true,
+        scrollY: -window.scrollY,
+        scrollX: -window.scrollX,
+        windowWidth: document.documentElement.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight
+      });
+      
+      const link = document.createElement('a');
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      link.download = `screenshot-${timestamp}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (error) {
+      console.error('Screenshot failed:', error);
+    }
+  };
+
   return (
     <>
       <header 
@@ -110,6 +132,25 @@ const AppHeader = ({ selectedTab, isTasksPage, activeTaskTab, isMonitorPage, isC
         
         <TooltipProvider>
           <div className="flex items-center gap-[10px]">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div 
+                  className="rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 hover:bg-white/30"
+                  style={{ 
+                    backgroundColor: 'rgba(255, 255, 255, 0.20)', 
+                    width: '40px', 
+                    height: '40px'
+                  }}
+                  onClick={handleScreenshot}
+                >
+                  <Camera className="text-white" size={18} />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-white text-gray-800 border border-gray-200">
+                <p>Screenshot</p>
+              </TooltipContent>
+            </Tooltip>
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <div 
