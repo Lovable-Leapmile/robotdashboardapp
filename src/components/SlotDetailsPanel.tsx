@@ -174,7 +174,7 @@ const SlotDetailsPanel = ({ slotDetails, isVisible }: SlotDetailsPanelProps) => 
 
           {/* Row 3: Value Text */}
           <div className="flex items-center justify-center px-6 pb-6 pt-2">
-            <div className="text-center text-sm font-medium" style={{ color: '#351c75' }}>
+            <div className="text-center text-sm font-bold" style={{ color: '#351c75' }}>
               {qrValue}
             </div>
           </div>
