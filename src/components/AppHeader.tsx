@@ -133,24 +133,26 @@ const AppHeader = ({ selectedTab, isTasksPage, activeTaskTab, isMonitorPage, isC
         
         <TooltipProvider>
           <div className="flex items-center gap-[10px]">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div 
-                  className="rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 hover:bg-white/30"
-                  style={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.20)', 
-                    width: '40px', 
-                    height: '40px'
-                  }}
-                  onClick={handleScreenshot}
-                >
-                  <Camera className="text-white" size={18} />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="bg-white text-gray-800 border border-gray-200">
-                <p>Screenshot</p>
-              </TooltipContent>
-            </Tooltip>
+            {selectedTab && !isTasksPage && !isCameraPage && !isReportsPage && !isLogsPage && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div 
+                    className="rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 hover:bg-white/30"
+                    style={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.20)', 
+                      width: '40px', 
+                      height: '40px'
+                    }}
+                    onClick={handleScreenshot}
+                  >
+                    <Camera className="text-white" size={18} />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-white text-gray-800 border border-gray-200">
+                  <p>Screenshot</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
 
             <Tooltip>
               <TooltipTrigger asChild>
