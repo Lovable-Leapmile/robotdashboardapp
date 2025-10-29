@@ -133,7 +133,7 @@ const AppHeader = ({ selectedTab, isTasksPage, activeTaskTab, isMonitorPage, isC
         
         <TooltipProvider>
           <div className="flex items-center gap-[10px]">
-            {selectedTab && !isTasksPage && !isCameraPage && !isReportsPage && !isLogsPage && (
+            {selectedTab === "Robot" && (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div 
