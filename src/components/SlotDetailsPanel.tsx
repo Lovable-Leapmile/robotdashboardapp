@@ -69,27 +69,6 @@ const SlotDetailsPanel = ({ slotDetails, isVisible }: SlotDetailsPanelProps) => 
             </CardContent>
           </Card>
 
-          {/* Station Section */}
-          {hasStation && (
-            <Card>
-              <CardContent className="py-3 px-4">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-sm font-medium text-muted-foreground min-w-fit">Station:</span>
-                  <span className="text-base font-semibold flex-1 text-right" style={{ color: '#351c75' }}>
-                    {slotDetails.slot_name}
-                  </span>
-                  <button
-                    onClick={() => showQrCode(slotDetails.slot_name, "Station")}
-                    className="p-2 hover:bg-muted rounded-md transition-colors flex-shrink-0"
-                    aria-label="Show QR Code"
-                  >
-                    <QrCode className="h-5 w-5" style={{ color: '#351c75' }} />
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
           {/* Tray ID Section */}
           {hasTray && (
             <Card>
@@ -101,6 +80,27 @@ const SlotDetailsPanel = ({ slotDetails, isVisible }: SlotDetailsPanelProps) => 
                   </span>
                   <button
                     onClick={() => showQrCode(slotDetails.tray_id!, "Tray ID")}
+                    className="p-2 hover:bg-muted rounded-md transition-colors flex-shrink-0"
+                    aria-label="Show QR Code"
+                  >
+                    <QrCode className="h-5 w-5" style={{ color: '#351c75' }} />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Station Section */}
+          {hasStation && (
+            <Card>
+              <CardContent className="py-3 px-4">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-medium text-muted-foreground min-w-fit">Station:</span>
+                  <span className="text-base font-semibold flex-1 text-right" style={{ color: '#351c75' }}>
+                    {slotDetails.slot_name}
+                  </span>
+                  <button
+                    onClick={() => showQrCode(slotDetails.slot_name, "Station")}
                     className="p-2 hover:bg-muted rounded-md transition-colors flex-shrink-0"
                     aria-label="Show QR Code"
                   >
