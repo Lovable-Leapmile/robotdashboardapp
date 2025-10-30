@@ -73,9 +73,14 @@ export const RobotStateTimeline = () => {
   const timeLabels = Array.from({ length: 11 }, (_, i) => 8 + i);
 
   return (
-    <div className="flex flex-col" style={{ marginLeft: '20px', flex: 1 }}>
-      <div className="text-xl font-semibold mb-4" style={{ color: '#351c75' }}>
-        Robot Status Timeline
+    <div className="flex flex-col" style={{ flex: 1 }}>
+      <div className="text-center mb-4">
+        <div className="text-xl font-semibold" style={{ color: '#351c75' }}>
+          Robot Status Timeline
+        </div>
+        <div className="text-sm" style={{ color: '#9ca3af' }}>
+          {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
+        </div>
       </div>
       
       <div style={{ height: '280px', width: '100%', minWidth: '600px' }}>
