@@ -17,6 +17,7 @@ const STATUS_LABELS = ["error", "maintenance", "idle", "active"];
 
 export const RobotStateTimeline = () => {
   const [data, setData] = useState<Array<{ time: number; status: number; statusName: string }>>([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const fetchRobotState = async () => {
     try {
@@ -70,6 +71,13 @@ export const RobotStateTimeline = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const timeLabels = Array.from({ length: 11 }, (_, i) => 8 + i);
 
   return (
@@ -79,7 +87,7 @@ export const RobotStateTimeline = () => {
           Robot Status Timeline
         </div>
         <div className="text-sm" style={{ color: '#9ca3af' }}>
-          {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
+          {currentTime.toLocaleDateString()} {currentTime.toLocaleTimeString()}
         </div>
       </div>
       
