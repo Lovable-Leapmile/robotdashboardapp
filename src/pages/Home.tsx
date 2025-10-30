@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppHeader from "@/components/AppHeader";
+import { RobotStateTimeline } from "@/components/RobotStateTimeline";
 
 const Home = () => {
   const [userName, setUserName] = useState("");
@@ -116,6 +117,9 @@ const Home = () => {
               ))}
             </div>
           </div>
+
+          {/* Robot State Timeline */}
+          <RobotStateTimeline />
         </div>
       </main>
     </div>
