@@ -80,14 +80,14 @@ export const RobotStateTimeline = () => {
       
       <div style={{ height: '280px', width: '100%', minWidth: '600px' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart margin={{ top: 10, right: 30, bottom: 60, left: 80 }}>
+          <ScatterChart margin={{ top: 10, right: 30, bottom: 40, left: 80 }}>
             <XAxis
               type="number"
               dataKey="time"
               domain={[8, 18]}
               ticks={timeLabels}
               tickFormatter={(value) => `${value}:00`}
-              label={{ value: 'Time of Day', position: 'bottom', offset: 40, style: { fill: '#351c75', fontSize: 13 } }}
+              label={{ value: 'Time of Day', position: 'bottom', offset: 20, style: { fill: '#351c75', fontSize: 13 } }}
               tick={{ fill: '#351c75', fontSize: 12 }}
             />
             <YAxis
@@ -135,7 +135,7 @@ export const RobotStateTimeline = () => {
       </div>
 
       {/* Legend */}
-      <div className="flex justify-center mt-4" style={{ gap: '24px' }}>
+      <div className="flex justify-center mt-2" style={{ gap: '24px' }}>
         {Object.entries(STATUS_COLORS).map(([status, color]) => (
           <div key={status} className="flex items-center" style={{ gap: '6px' }}>
             <div style={{ 
