@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Bot, Package, Layers, Zap } from "lucide-react";
+import { Bot, Package, Layers, Zap, Activity, Flame, Battery } from "lucide-react";
 
 const AUTH_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2wiOiJhZG1pbiIsImV4cCI6MTkwMDY1MzE0M30.asYhgMAOvrau4G6LI4V4IbgYZ022g_GX0qZxaS57GQc";
 
@@ -299,24 +299,36 @@ export const DashboardCards = () => {
             <div className="space-y-2">
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-background/50 rounded-lg p-2 text-center">
-                  <div className="text-[10px] text-muted-foreground mb-0.5">Voltage</div>
-                  <div className="text-base font-bold text-foreground">{powerInfo.voltage}</div>
+                  <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-0.5">
+                    <Zap className="w-3 h-3" />
+                    Voltage
+                  </div>
+                  <div className="text-lg font-bold text-foreground">{powerInfo.voltage}</div>
                 </div>
                 <div className="bg-background/50 rounded-lg p-2 text-center">
-                  <div className="text-[10px] text-muted-foreground mb-0.5">Current</div>
-                  <div className="text-base font-bold text-foreground">{powerInfo.current}</div>
+                  <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-0.5">
+                    <Activity className="w-3 h-3" />
+                    Current
+                  </div>
+                  <div className="text-lg font-bold text-foreground">{powerInfo.current}</div>
                 </div>
               </div>
               <div className="bg-amber-500/10 rounded-lg p-2 border border-amber-500/20">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-medium text-muted-foreground">Power</span>
-                  <span className="text-base font-bold text-amber-600">{powerInfo.power}</span>
+                  <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                    <Flame className="w-3 h-3" />
+                    Power
+                  </span>
+                  <span className="text-lg font-bold text-amber-600">{powerInfo.power}</span>
                 </div>
               </div>
               <div className="bg-green-500/10 rounded-lg p-2 border border-green-500/20">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-medium text-muted-foreground">Total Energy</span>
-                  <span className="text-base font-bold text-green-600">{powerInfo.energy}</span>
+                  <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                    <Battery className="w-3 h-3" />
+                    Total Energy
+                  </span>
+                  <span className="text-lg font-bold text-green-600">{powerInfo.energy}</span>
                 </div>
               </div>
             </div>
