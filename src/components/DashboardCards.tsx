@@ -188,7 +188,7 @@ export const DashboardCards = () => {
                   </div>
                 </div>
               </div>
-              <div className="text-[9px] text-muted-foreground text-center bg-background/30 rounded py-0.5 px-2">
+              <div className="text-[11px] text-muted-foreground text-center bg-background/30 rounded py-0.5 px-2">
                 Updated: {formatToIST(robotInfo.updated_at)}
               </div>
             </div>
@@ -229,7 +229,7 @@ export const DashboardCards = () => {
               </div>
               <div className="bg-background/50 rounded-lg p-2 space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-medium text-muted-foreground">Occupancy Rate</span>
+                  <span className="text-xs font-medium text-muted-foreground">Occupancy Rate</span>
                   <span className="text-xs font-bold text-foreground">{slotInfo.occupiedPercent.toFixed(1)}%</span>
                 </div>
                 <Progress value={slotInfo.occupiedPercent} className="h-1.5" />
@@ -272,7 +272,7 @@ export const DashboardCards = () => {
               </div>
               <div className="bg-background/50 rounded-lg p-2 space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-medium text-muted-foreground">Occupancy Rate</span>
+                  <span className="text-xs font-medium text-muted-foreground">Occupancy Rate</span>
                   <span className="text-xs font-bold text-foreground">{trayInfo.occupiedPercent.toFixed(1)}%</span>
                 </div>
                 <Progress value={trayInfo.occupiedPercent} className="h-1.5" />
