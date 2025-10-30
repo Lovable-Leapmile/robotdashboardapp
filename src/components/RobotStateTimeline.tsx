@@ -29,10 +29,10 @@ export const RobotStateTimeline = () => {
       <circle
         cx={cx}
         cy={cy}
-        r={isLatest ? 8 : 5}
+        r={isLatest ? 5 : 3}
         fill={color}
         stroke={isLatest ? "#351c75" : color}
-        strokeWidth={isLatest ? 3 : 0}
+        strokeWidth={isLatest ? 2 : 0}
       />
     );
   };
@@ -160,10 +160,10 @@ export const RobotStateTimeline = () => {
             <Line
               type="monotone"
               dataKey="status"
-              stroke="#351c75"
-              strokeWidth={2}
+              stroke="#9ca3af"
+              strokeWidth={1.5}
               dot={<CustomDot />}
-              activeDot={{ r: 8 }}
+              activeDot={{ r: 6 }}
             />
           </LineChart>
         </ResponsiveContainer>
