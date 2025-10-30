@@ -103,16 +103,7 @@ export const RobotStateTimeline = () => {
   const timeLabels = Array.from({ length: 11 }, (_, i) => 8 + i);
 
   return (
-    <div className="flex flex-col" style={{ flex: 1, marginTop: '15px' }}>
-      <div className="flex justify-center items-center mb-4" style={{ gap: '24px' }}>
-        <div className="text-xl font-semibold" style={{ color: '#351c75' }}>
-          Robot Status Timeline
-        </div>
-        <div className="text-sm" style={{ color: '#9ca3af' }}>
-          {currentTime.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })} {currentTime.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' })}
-        </div>
-      </div>
-      
+    <div className="flex flex-col" style={{ flex: 1 }}>
       <div style={{ height: '280px', width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 10, right: 30, bottom: 40, left: 80 }}>

@@ -8,6 +8,7 @@ const Home = () => {
   const [robotNumRacks, setRobotNumRacks] = useState(0);
   const [robotNumSlots, setRobotNumSlots] = useState(0);
   const [robotNumDepths, setRobotNumDepths] = useState(0);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +23,13 @@ const Home = () => {
     setUserName(storedUserName);
     fetchRobotConfig();
   }, [navigate]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const fetchRobotConfig = async () => {
     try {
@@ -55,12 +63,28 @@ const Home = () => {
       <AppHeader selectedTab="Robot" />
       
       <main style={{ marginLeft: '15px', paddingTop: '20px', paddingBottom: '20px' }}>
+        {/* Header row with all titles */}
+        <div className="flex items-center mb-4" style={{ gap: '100px', paddingLeft: '0' }}>
+          <div className="text-xl font-semibold" style={{ color: '#351c75', width: '155px', textAlign: 'center' }}>
+            Row 1
+          </div>
+          <div className="text-xl font-semibold" style={{ color: '#351c75', width: '155px', textAlign: 'center' }}>
+            Row 0
+          </div>
+          <div className="flex items-center" style={{ gap: '24px' }}>
+            <div className="text-xl font-semibold" style={{ color: '#351c75' }}>
+              Robot Status Timeline
+            </div>
+            <div className="text-sm" style={{ color: '#9ca3af' }}>
+              {currentTime.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })} {currentTime.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' })}
+            </div>
+          </div>
+        </div>
+
+        {/* Content row */}
         <div className="flex" style={{ gap: '100px' }}>
           {/* Row 1 */}
           <div className="flex flex-col items-center">
-            <div className="text-xl font-semibold mb-4" style={{ color: '#351c75' }}>
-              Row 1
-            </div>
             <div className="flex" style={{ gap: '10px' }}>
               {Array.from({ length: robotNumDepths }, (_, depthIdx) => (
                 <div key={`row1-depth${depthIdx}`} className="flex flex-col" style={{ gap: '10px' }}>
@@ -89,9 +113,6 @@ const Home = () => {
 
           {/* Row 0 */}
           <div className="flex flex-col items-center">
-            <div className="text-xl font-semibold mb-4" style={{ color: '#351c75' }}>
-              Row 0
-            </div>
             <div className="flex" style={{ gap: '10px' }}>
               {Array.from({ length: robotNumDepths }, (_, depthIdx) => (
                 <div key={`row0-depth${depthIdx}`} className="flex flex-col" style={{ gap: '10px' }}>
