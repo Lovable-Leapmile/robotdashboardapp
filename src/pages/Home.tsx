@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppHeader from "@/components/AppHeader";
-import { DashboardCards } from "@/components/DashboardCards";
+import { RobotStateTimeline } from "@/components/RobotStateTimeline";
 
 const Home = () => {
   const [userName, setUserName] = useState("");
@@ -73,7 +73,7 @@ const Home = () => {
           </div>
           <div className="flex items-center" style={{ gap: '24px' }}>
             <div className="text-xl font-semibold" style={{ color: '#351c75' }}>
-              Dashboard Metrics
+              Robot Status Timeline
             </div>
             <div className="text-sm" style={{ color: '#9ca3af' }}>
               {currentTime.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })} {currentTime.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' })}
@@ -139,8 +139,8 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Dashboard Cards */}
-          <DashboardCards />
+          {/* Robot State Timeline */}
+          <RobotStateTimeline />
         </div>
       </main>
     </div>
