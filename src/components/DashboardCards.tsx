@@ -80,7 +80,7 @@ export const DashboardCards = () => {
       const slotsData = await slotsResponse.json();
       const traysData = await traysResponse.json();
 
-      const totalSlots = slotsData.total_count || 0;
+      const totalSlots = slotsData.records?.[0]?.total_count || 0;
       const occupiedSlots = traysData.records ? traysData.records.length : 0;
       const freeSlots = totalSlots - occupiedSlots;
       const occupiedPercent = totalSlots > 0 ? (occupiedSlots / totalSlots) * 100 : 0;
