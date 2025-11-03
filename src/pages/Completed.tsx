@@ -190,6 +190,7 @@ const Completed = () => {
               defaultColDef={{
                 resizable: true,
                 minWidth: 100,
+                minHeight: 50,
                 sortable: true,
                 filter: true
               }}
