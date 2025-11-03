@@ -146,7 +146,7 @@ All colors MUST be HSL.
   padding: 0 12px !important;
   display: flex !important;
   align-items: center !important;
-  // justify-content: flex-start !important;
+  justify-content: flex-start !important;
   // line-height: normal !important;
   height: 50px !important;
   min-height: 50px !important;
