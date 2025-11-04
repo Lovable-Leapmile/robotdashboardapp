@@ -241,7 +241,7 @@ const Home = () => {
         </div>
 
         {/* Content row */}
-        <div className="flex" style={{ gap: '100px' }}>
+        <div className="flex" style={{ gap: '10px' }}>
           {/* Row 1 */}
           <div className="flex flex-col items-center relative">
             <div className="flex" style={{ gap: '10px' }}>
@@ -282,8 +282,8 @@ const Home = () => {
                 alt="Shuttle" 
                 className="absolute"
                 style={{
-                  width: '120px',
-                  height: 'auto',
+                  width: '75px',
+                  height: '25px',
                   top: '50%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
@@ -334,8 +334,8 @@ const Home = () => {
                 alt="Shuttle" 
                 className="absolute"
                 style={{
-                  width: '120px',
-                  height: 'auto',
+                  width: '75px',
+                  height: '25px',
                   top: '50%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
