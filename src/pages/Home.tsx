@@ -36,6 +36,7 @@ const Home = () => {
   const [shuttleData, setShuttleData] = useState<ShuttleData[]>([]);
   const [activeShuttle, setActiveShuttle] = useState<ShuttleData | null>(null);
   const [highlightedRacks, setHighlightedRacks] = useState<HighlightedRack[]>([]);
+  const [isAnimating, setIsAnimating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -113,7 +114,7 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Parallel process logic
+  // Parallel process logic with smooth animations
   useEffect(() => {
     if (shuttleData.length === 0) return;
 
@@ -125,26 +126,39 @@ const Home = () => {
         );
         if (storeStartRecords.length > 0) {
           const shuttle = storeStartRecords[0];
+          setIsAnimating(true);
           setActiveShuttle(shuttle);
           setHighlightedRacks([
             { row: shuttle.row, rack: shuttle.rack, depth: shuttle.depth, slot: shuttle.slot, type: "source" },
           ]);
           console.log("Parallel 1 - Store Start:", shuttle);
           
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          // Wait for initial positioning
+          await new Promise((resolve) => setTimeout(resolve, 300));
 
           const storeStopRecords = shuttleData.filter(
             (s) => s.action === "store" && s.status === "stop"
           );
           if (storeStopRecords.length > 0) {
             const destShuttle = storeStopRecords[0];
+            
+            // Update destination highlight
             setHighlightedRacks((prev) => [
               ...prev,
               { row: destShuttle.row, rack: destShuttle.rack, depth: destShuttle.depth, slot: destShuttle.slot, type: "destination" },
             ]);
+            
+            // Animate shuttle to destination
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            setActiveShuttle(destShuttle);
             console.log("Parallel 1 - Store Stop:", destShuttle);
             
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            // Wait for animation to complete
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            
+            // Fade out and clear
+            setIsAnimating(false);
+            await new Promise((resolve) => setTimeout(resolve, 300));
             setActiveShuttle(null);
             setHighlightedRacks([]);
           }
@@ -162,7 +176,7 @@ const Home = () => {
           const shuttle = retrieveStopRecords[0];
           console.log("Parallel 2 - Retrieve Stop:", shuttle);
           
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 1500));
 
           const storeStartRecords = shuttleData.filter(
             (s) => s.action === "store" && s.status === "start"
@@ -267,7 +281,7 @@ const Home = () => {
                   {Array.from({ length: robotNumRacks }, (_, rackIdx) => (
                     <div
                       key={`row1-depth${depthIdx}-rack${rackIdx}`}
-                      className="flex items-center justify-center"
+                      className="flex items-center justify-center transition-all duration-500 ease-in-out"
                       style={{
                         width: "75px",
                         height: "25px",
@@ -277,6 +291,9 @@ const Home = () => {
                         color: "#351c75",
                         fontSize: "13px",
                         fontWeight: "500",
+                        boxShadow: isRackHighlighted(1, rackIdx, depthIdx, 0) 
+                          ? "0 0 10px rgba(251, 191, 36, 0.3)" 
+                          : "none",
                       }}
                     >
                       {rackIdx}
@@ -291,6 +308,7 @@ const Home = () => {
               <img
                 src={getShuttleImage()!}
                 alt="shuttle"
+                className={`${isAnimating ? 'animate-scale-in' : 'animate-fade-out'}`}
                 style={{
                   position: "absolute",
                   width: "75px",
@@ -298,7 +316,10 @@ const Home = () => {
                   top: `${activeShuttle.rack * 35}px`,
                   left: `${activeShuttle.depth * 85}px`,
                   zIndex: 10,
-                  transition: "all 0.5s ease-in-out",
+                  transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+                  transform: isAnimating ? "scale(1)" : "scale(0.95)",
+                  opacity: isAnimating ? 1 : 0,
+                  filter: isAnimating ? "drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))" : "none",
                 }}
               />
             )}
@@ -312,7 +333,7 @@ const Home = () => {
                   {Array.from({ length: robotNumRacks }, (_, rackIdx) => (
                     <div
                       key={`row0-depth${depthIdx}-rack${rackIdx}`}
-                      className="flex items-center justify-center"
+                      className="flex items-center justify-center transition-all duration-500 ease-in-out"
                       style={{
                         width: "75px",
                         height: "25px",
@@ -322,6 +343,9 @@ const Home = () => {
                         color: "#351c75",
                         fontSize: "13px",
                         fontWeight: "500",
+                        boxShadow: isRackHighlighted(0, rackIdx, depthIdx, 0) 
+                          ? "0 0 10px rgba(52, 211, 153, 0.3)" 
+                          : "none",
                       }}
                     >
                       {rackIdx}
@@ -336,6 +360,7 @@ const Home = () => {
               <img
                 src={getShuttleImage()!}
                 alt="shuttle"
+                className={`${isAnimating ? 'animate-scale-in' : 'animate-fade-out'}`}
                 style={{
                   position: "absolute",
                   width: "75px",
@@ -343,7 +368,10 @@ const Home = () => {
                   top: `${activeShuttle.rack * 35}px`,
                   left: `${activeShuttle.depth * 85}px`,
                   zIndex: 10,
-                  transition: "all 0.5s ease-in-out",
+                  transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+                  transform: isAnimating ? "scale(1)" : "scale(0.95)",
+                  opacity: isAnimating ? 1 : 0,
+                  filter: isAnimating ? "drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))" : "none",
                 }}
               />
             )}
