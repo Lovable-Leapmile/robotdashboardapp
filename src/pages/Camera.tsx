@@ -20,8 +20,8 @@ const Camera = () => {
   }, []);
 
   useEffect(() => {
-    // Filter to only show task IDs starting with TID-
-    const tidTasks = tasks.filter((task) => task.task_id.startsWith("TID-"));
+    // Filter to only show task IDs starting with TID- (exclude null/undefined)
+    const tidTasks = tasks.filter((task) => task.task_id && task.task_id.startsWith("TID-"));
     
     if (searchQuery.trim() === "") {
       setFilteredTasks(tidTasks);
