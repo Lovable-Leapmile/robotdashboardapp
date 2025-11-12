@@ -201,6 +201,7 @@ const CameraTaskDetails = () => {
               <div className="flex items-center justify-center px-6 pt-2.5 pb-4">
                 <video
                   controls
+                  autoPlay
                   className="w-full rounded-lg shadow-lg"
                   style={{ maxHeight: '70vh' }}
                   src={selectedVideo.clip_url}
