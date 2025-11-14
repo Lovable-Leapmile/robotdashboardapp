@@ -322,16 +322,26 @@ const CameraTaskDetails = () => {
                 </Button>
                 
                 <div className="flex-1 flex items-center justify-center min-w-0">
-                  <video
-                    controls
-                    autoPlay
-                    className="max-w-full h-auto rounded-lg shadow-lg"
-                    style={{ maxHeight: '75vh' }}
-                    src={selectedVideo.clip_url}
-                    key={selectedVideo.clip_filename}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
+                  {selectedVideo.clip_filename.toLowerCase().endsWith('.mp4') ? (
+                    <video
+                      controls
+                      autoPlay
+                      className="max-w-full h-auto rounded-lg shadow-lg"
+                      style={{ maxHeight: '75vh' }}
+                      src={selectedVideo.clip_url}
+                      key={selectedVideo.clip_filename}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <img
+                      src={selectedVideo.clip_url}
+                      alt={selectedVideo.clip_filename}
+                      className="max-w-full h-auto rounded-lg shadow-lg"
+                      style={{ maxHeight: '75vh' }}
+                      key={selectedVideo.clip_filename}
+                    />
+                  )}
                 </div>
 
                 <Button
