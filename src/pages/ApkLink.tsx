@@ -22,9 +22,9 @@ const ApkLink = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#fafafa' }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#fafafa" }}>
       <AppHeader selectedTab="APK Link" />
-      
+
       <main style={{ marginLeft: "15px", paddingTop: "20px", paddingBottom: "20px", paddingRight: "15px" }}>
         {/* Admin App Section */}
         <section className="mb-8">
@@ -32,13 +32,11 @@ const ApkLink = () => {
             <Shield className="w-6 h-6 text-primary" />
             <h1 className="text-2xl font-bold text-primary">Admin App</h1>
           </div>
-          
+
           <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 shadow-sm">
             <CardHeader className="pb-3 pt-4 px-5 border-b border-primary/20">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-bold text-primary flex items-center gap-2">
-                  Version 1.0
-                </CardTitle>
+                <CardTitle className="text-lg font-bold text-primary flex items-center gap-2">Version 1.0</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="pt-4 px-5 pb-4">
@@ -68,9 +66,11 @@ const ApkLink = () => {
                     </div>
                   </div>
                 </div>
-                <Button 
+                <Button
                   className="w-full md:w-auto bg-primary hover:bg-primary/90"
-                  onClick={() => window.open('https://ams-bucket.blr1.cdn.digitaloceanspaces.com/admin-app-v35.apk', '_blank')}
+                  onClick={() =>
+                    window.open("https://ams-bucket.blr1.cdn.digitaloceanspaces.com/admin-app-v35.apk", "_blank")
+                  }
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Download APK
@@ -86,7 +86,7 @@ const ApkLink = () => {
             <Store className="w-6 h-6 text-primary" />
             <h1 className="text-2xl font-bold text-primary">Store App</h1>
           </div>
-          
+
           <div className="space-y-4">
             {/* Version 4.0 - Latest */}
             <Card className="bg-gradient-to-br from-purple-500/5 to-purple-500/10 border-purple-500/20 shadow-sm">
@@ -140,22 +140,30 @@ const ApkLink = () => {
                       <li>• Quick request option for empty trays.</li>
                       <li>• Access complete transaction history anytime.</li>
                       <li>• Scan trays at the picking station for faster drop/pickup.</li>
-                      <li>• New smooth flow: Select/scan tray → Choose Drop or Pickup → Confirm Item ID → Add Quantity → Submit.</li>
+                      <li>
+                        • New smooth flow: Select/scan tray → Choose Drop or Pickup → Confirm Item ID → Add Quantity →
+                        Submit.
+                      </li>
                     </ul>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <Button 
+                    <Button
                       variant="outline"
                       className="flex-1 border-purple-500/30 hover:bg-purple-500/10"
-                      onClick={() => window.open('https://amsstores1.leapmile.com:6500/', '_blank')}
+                      onClick={() => window.open("https://amsstores1.leapmile.com:6500/", "_blank")}
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Open Web App
                     </Button>
-                    <Button 
-                      className="flex-1 bg-purple-600 hover:bg-purple-600/90 text-white"
-                      onClick={() => window.open('https://ams-bucket.blr1.cdn.digitaloceanspaces.com/Ams-Stores-v4-release.apk', '_blank')}
+                    <Button
+                      className="flex-1 bg-primary hover:bg-primary/90 text-white"
+                      onClick={() =>
+                        window.open(
+                          "https://ams-bucket.blr1.cdn.digitaloceanspaces.com/Ams-Stores-v4-release.apk",
+                          "_blank",
+                        )
+                      }
                     >
                       <Download className="h-4 w-4 mr-2" />
                       Download APK
@@ -198,17 +206,22 @@ const ApkLink = () => {
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <Button 
+                    <Button
                       variant="outline"
                       className="flex-1 border-blue-500/30 hover:bg-blue-500/10"
-                      onClick={() => window.open('https://amsstores1.leapmile.com:5700/', '_blank')}
+                      onClick={() => window.open("https://amsstores1.leapmile.com:5700/", "_blank")}
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Open Web App
                     </Button>
-                    <Button 
-                      className="flex-1 bg-blue-600 hover:bg-blue-600/90 text-white"
-                      onClick={() => window.open('https://ams-bucket.blr1.cdn.digitaloceanspaces.com/Ams-Stores-v3-release.apk', '_blank')}
+                    <Button
+                      className="flex-1 bg-primary hover:bg-primary/90 text-white"
+                      onClick={() =>
+                        window.open(
+                          "https://ams-bucket.blr1.cdn.digitaloceanspaces.com/Ams-Stores-v3-release.apk",
+                          "_blank",
+                        )
+                      }
                     >
                       <Download className="h-4 w-4 mr-2" />
                       Download APK
@@ -250,9 +263,14 @@ const ApkLink = () => {
                       </div>
                     </div>
                   </div>
-                  <Button 
+                  <Button
                     className="w-full md:w-auto bg-primary hover:bg-primary/90"
-                    onClick={() => window.open('https://ams-bucket.blr1.cdn.digitaloceanspaces.com/Ams-Stores-v2-release.apk', '_blank')}
+                    onClick={() =>
+                      window.open(
+                        "https://ams-bucket.blr1.cdn.digitaloceanspaces.com/Ams-Stores-v2-release.apk",
+                        "_blank",
+                      )
+                    }
                   >
                     <Download className="h-4 w-4 mr-2" />
                     Download APK
@@ -293,9 +311,11 @@ const ApkLink = () => {
                       </div>
                     </div>
                   </div>
-                  <Button 
+                  <Button
                     className="w-full md:w-auto bg-primary hover:bg-primary/90"
-                    onClick={() => window.open('https://ams-bucket.blr1.cdn.digitaloceanspaces.com/Ams-App-V1-release.apk', '_blank')}
+                    onClick={() =>
+                      window.open("https://ams-bucket.blr1.cdn.digitaloceanspaces.com/Ams-App-V1-release.apk", "_blank")
+                    }
                   >
                     <Download className="h-4 w-4 mr-2" />
                     Download APK
