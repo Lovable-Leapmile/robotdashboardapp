@@ -1,10 +1,20 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 const SESSION_DURATION_DAYS = 7;
 const SESSION_DURATION_MS = SESSION_DURATION_DAYS * 24 * 60 * 60 * 1000;
 const WARNING_BEFORE_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes before expiry
+
+// Global function to extend session - can be called from toast action
+let extendSessionCallback: (() => void) | null = null;
+
+export const extendSession = () => {
+  if (extendSessionCallback) {
+    extendSessionCallback();
+  }
+};
 
 export const useAuthSession = () => {
   const navigate = useNavigate();
@@ -12,6 +22,37 @@ export const useAuthSession = () => {
   const warningShownRef = useRef(false);
   const warningTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const logoutTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleExtendSession = useCallback(() => {
+    // Update login timestamp to current time (extends session by 7 days)
+    localStorage.setItem("login_timestamp", Date.now().toString());
+    warningShownRef.current = false;
+    
+    // Clear existing timeouts
+    if (warningTimeoutRef.current) {
+      clearTimeout(warningTimeoutRef.current);
+    }
+    if (logoutTimeoutRef.current) {
+      clearTimeout(logoutTimeoutRef.current);
+    }
+
+    toast({
+      title: "Session Extended",
+      description: "Your session has been extended for another 7 days.",
+    });
+
+    // Re-run session check to set up new timeouts
+    window.location.reload();
+  }, []);
+
+  useEffect(() => {
+    // Register the extend session callback
+    extendSessionCallback = handleExtendSession;
+
+    return () => {
+      extendSessionCallback = null;
+    };
+  }, [handleExtendSession]);
 
   useEffect(() => {
     // Skip auth check on login page
@@ -50,27 +91,30 @@ export const useAuthSession = () => {
         if (!warningShownRef.current && timeUntilExpiry > 0) {
           const timeUntilWarning = timeUntilExpiry - WARNING_BEFORE_EXPIRY_MS;
           
+          const showWarningToast = (minutesLeft: number) => {
+            toast({
+              title: "Session Expiring Soon",
+              description: `Your session will expire in ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}.`,
+              variant: "destructive",
+              duration: 60000, // Show for 1 minute
+              action: (
+                <ToastAction altText="Stay logged in" onClick={handleExtendSession}>
+                  Stay Logged In
+                </ToastAction>
+              ),
+            });
+            warningShownRef.current = true;
+          };
+
           if (timeUntilWarning > 0) {
             // Schedule warning
             warningTimeoutRef.current = setTimeout(() => {
-              toast({
-                title: "Session Expiring Soon",
-                description: "Your session will expire in 5 minutes. Please save your work and log in again to continue.",
-                variant: "destructive",
-                duration: 30000, // Show for 30 seconds
-              });
-              warningShownRef.current = true;
+              showWarningToast(5);
             }, timeUntilWarning);
           } else if (timeUntilExpiry <= WARNING_BEFORE_EXPIRY_MS && timeUntilExpiry > 0) {
             // Less than 5 minutes remaining, show warning immediately
             const minutesLeft = Math.ceil(timeUntilExpiry / 60000);
-            toast({
-              title: "Session Expiring Soon",
-              description: `Your session will expire in ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}. Please save your work and log in again to continue.`,
-              variant: "destructive",
-              duration: 30000,
-            });
-            warningShownRef.current = true;
+            showWarningToast(minutesLeft);
           }
 
           // Schedule auto-logout
@@ -108,7 +152,7 @@ export const useAuthSession = () => {
         clearTimeout(logoutTimeoutRef.current);
       }
     };
-  }, [navigate, location.pathname]);
+  }, [navigate, location.pathname, handleExtendSession]);
 
   const logout = () => {
     if (warningTimeoutRef.current) {
@@ -123,7 +167,7 @@ export const useAuthSession = () => {
     navigate("/");
   };
 
-  return { logout };
+  return { logout, extendSession: handleExtendSession };
 };
 
 export const isSessionValid = (): boolean => {

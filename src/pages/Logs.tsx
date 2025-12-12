@@ -9,6 +9,14 @@ import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import noRecordsImage from "@/assets/no_records.png";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // Register AG Grid Community modules (required in v34+)
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -33,6 +41,121 @@ const Logs = () => {
   const gridApiRef = useRef<any>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const getFormattedData = (data: LogData[]) => {
+    return data.map(row => {
+      const message = row.message;
+      return {
+        "Created At": row.created_at ? format(new Date(row.created_at), "dd-MM-yyyy HH:mm:ss") : "N/A",
+        "Message": typeof message === "object" && message?.msg 
+          ? message.msg.split("\\n")[0] 
+          : typeof message === "object" 
+            ? JSON.stringify(message).split("\\n")[0]
+            : String(message || "N/A"),
+        "Action": typeof message === "object" && message?.metadata?.station_slot_id 
+          ? message.metadata.station_slot_id 
+          : "N/A",
+        "Status": typeof message === "object" && message?.status 
+          ? message.status 
+          : "N/A",
+        "Tray ID": typeof message === "object" && message?.metadata?.tray_id 
+          ? message.metadata.tray_id 
+          : "N/A",
+        "Slot ID": typeof message === "object" && message?.metadata?.slot_id 
+          ? message.metadata.slot_id 
+          : "N/A",
+        "State": typeof message === "object" && message?.metadata?.state 
+          ? message.metadata.state 
+          : "N/A",
+      };
+    });
+  };
+
+  const exportToCSV = () => {
+    const formattedData = getFormattedData(rowData);
+    if (formattedData.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No logs to export",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const headers = Object.keys(formattedData[0]);
+    const csvContent = [
+      headers.join(","),
+      ...formattedData.map(row => 
+        headers.map(header => {
+          const value = row[header as keyof typeof row] || "";
+          // Escape quotes and wrap in quotes if contains comma
+          const escaped = String(value).replace(/"/g, '""');
+          return escaped.includes(",") || escaped.includes('"') || escaped.includes("\n") 
+            ? `"${escaped}"` 
+            : escaped;
+        }).join(",")
+      )
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `logs_${format(new Date(), "yyyy-MM-dd_HH-mm-ss")}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    toast({
+      title: "Export Successful",
+      description: "Logs exported to CSV file",
+    });
+  };
+
+  const exportToExcel = () => {
+    const formattedData = getFormattedData(rowData);
+    if (formattedData.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No logs to export",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const headers = Object.keys(formattedData[0]);
+    
+    // Create XML for Excel
+    let excelContent = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+  <Worksheet ss:Name="Logs">
+    <Table>
+      <Row>
+        ${headers.map(h => `<Cell><Data ss:Type="String">${h}</Data></Cell>`).join("")}
+      </Row>
+      ${formattedData.map(row => `
+      <Row>
+        ${headers.map(header => {
+          const value = String(row[header as keyof typeof row] || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          return `<Cell><Data ss:Type="String">${value}</Data></Cell>`;
+        }).join("")}
+      </Row>`).join("")}
+    </Table>
+  </Worksheet>
+</Workbook>`;
+
+    const blob = new Blob([excelContent], { type: "application/vnd.ms-excel" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `logs_${format(new Date(), "yyyy-MM-dd_HH-mm-ss")}.xls`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    toast({
+      title: "Export Successful",
+      description: "Logs exported to Excel file",
+    });
+  };
 
   const columnDefs: ColDef<LogData>[] = [
     { 
@@ -207,8 +330,33 @@ const Logs = () => {
       <AppHeader selectedTab="" isLogsPage={true} />
       
       <main className="p-3 sm:p-6">
+        {/* Export Buttons */}
+        <div className="flex justify-end mb-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="gap-2"
+                disabled={rowData.length === 0}
+              >
+                <Download className="w-4 h-4" />
+                <span className="hidden sm:inline">Export</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-background border border-border z-50">
+              <DropdownMenuItem onClick={exportToCSV} className="cursor-pointer">
+                Export as CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={exportToExcel} className="cursor-pointer">
+                Export as Excel
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         {!loading && rowData.length === 0 ? (
-          <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100vh - 120px)' }}>
+          <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100vh - 180px)' }}>
             <img 
               src={noRecordsImage} 
               alt="No Record found" 
@@ -216,7 +364,7 @@ const Logs = () => {
             />
           </div>
         ) : (
-          <div className="ag-theme-quartz w-full overflow-visible" style={{ height: 'calc(100vh - 120px)' }}>
+          <div className="ag-theme-quartz w-full overflow-visible" style={{ height: 'calc(100vh - 180px)' }}>
             <AgGridReact
               rowData={rowData}
               columnDefs={columnDefs}
