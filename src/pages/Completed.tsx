@@ -197,7 +197,7 @@ const Completed = () => {
               }}
               pagination={true}
               paginationPageSize={50}
-              rowHeight={50}
+              rowHeight={35}
               enableRangeSelection={true}
               headerHeight={40}
               onGridReady={(params) => {
