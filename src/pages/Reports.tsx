@@ -29,6 +29,28 @@ interface ReportConfig {
   columns: ColDef[];
 }
 
+const formatDateTime = (value: string | null) => {
+  if (!value) return "-";
+  const date = new Date(value);
+  return date.toLocaleString("en-IN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const formatDate = (value: string | null) => {
+  if (!value) return "-";
+  const date = new Date(value);
+  return date.toLocaleDateString("en-IN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+};
+
 const Reports = () => {
   useAuthSession();
   const { toast } = useToast();
@@ -41,21 +63,20 @@ const Reports = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [occupiedPercent, setOccupiedPercent] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(50);
+  const [pageSize, setPageSize] = useState(50);
 
   const reportConfigs: Record<ReportType, ReportConfig> = useMemo(() => ({
     product_stock: {
       label: "Product Stock Report",
       icon: <Package className="w-4 h-4" />,
-      endpoint: "https://amsstores1.leapmile.com/nanostore/items",
+      endpoint: "https://amsstores1.leapmile.com/nanostore/stock",
       columns: [
-        { field: "id", headerName: "S.No", width: 80, valueGetter: (params) => params.node?.rowIndex ? params.node.rowIndex + 1 : 1 },
-        { field: "created_at", headerName: "Transaction Date", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
-        { field: "updated_at", headerName: "Receive Date", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "updated_at", headerName: "Transaction Date", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
+        { field: "receive_date", headerName: "Receive Date", flex: 1, valueFormatter: (params) => formatDate(params.value || params.data?.created_at) },
         { field: "item_id", headerName: "Item Id", flex: 1 },
-        { field: "stock", headerName: "Stock", width: 100 },
+        { field: "stock", headerName: "Stock", width: 100, valueGetter: (params) => params.data?.stock || params.data?.item_quantity || 0 },
         { field: "tray_id", headerName: "Tray ID", flex: 1 },
-        { field: "tray_weight", headerName: "Tray Weight (kg)", width: 130, valueFormatter: (params) => params.value ? (params.value / 1000).toFixed(2) : "-" },
+        { field: "tray_weight", headerName: "Tray Weight (kg)", width: 140, valueFormatter: (params) => params.value ? (params.value / 1000).toFixed(2) : "-" },
         { field: "item_description", headerName: "Item Description", flex: 2 },
       ],
     },
@@ -64,13 +85,13 @@ const Reports = () => {
       icon: <ShoppingCart className="w-4 h-4" />,
       endpoint: "https://amsstores1.leapmile.com/nanostore/order_items",
       columns: [
-        { field: "id", headerName: "S.No", width: 80, valueGetter: (params) => params.node?.rowIndex ? params.node.rowIndex + 1 : 1 },
-        { field: "created_at", headerName: "Order Date", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "created_at", headerName: "Order Date", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
         { field: "order_id", headerName: "Order ID", flex: 1 },
         { field: "item_id", headerName: "Item ID", flex: 1 },
         { field: "quantity", headerName: "Quantity", width: 100 },
         { field: "status", headerName: "Status", width: 120 },
-        { field: "updated_at", headerName: "Updated At", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "item_description", headerName: "Item Description", flex: 2 },
+        { field: "updated_at", headerName: "Updated At", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
       ],
     },
     order_tray_transaction: {
@@ -78,13 +99,13 @@ const Reports = () => {
       icon: <Archive className="w-4 h-4" />,
       endpoint: "https://amsstores1.leapmile.com/robotmanager/tasks",
       columns: [
-        { field: "id", headerName: "S.No", width: 80, valueGetter: (params) => params.node?.rowIndex ? params.node.rowIndex + 1 : 1 },
-        { field: "created_at", headerName: "Task Date", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "created_at", headerName: "Task Date", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
         { field: "task_id", headerName: "Task ID", flex: 1 },
         { field: "tray_id", headerName: "Tray ID", flex: 1 },
         { field: "order_reference_id", headerName: "Order Ref", flex: 1 },
         { field: "task_status", headerName: "Status", width: 120 },
-        { field: "updated_at", headerName: "Completed At", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "tags", headerName: "Tags", flex: 1, valueFormatter: (params) => Array.isArray(params.value) ? params.value.join(", ") : "-" },
+        { field: "updated_at", headerName: "Completed At", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
       ],
     },
     tray_transaction: {
@@ -92,14 +113,14 @@ const Reports = () => {
       icon: <Layers className="w-4 h-4" />,
       endpoint: "https://amsstores1.leapmile.com/robotmanager/trays",
       columns: [
-        { field: "id", headerName: "S.No", width: 80, valueGetter: (params) => params.node?.rowIndex ? params.node.rowIndex + 1 : 1 },
-        { field: "created_at", headerName: "Created Date", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "created_at", headerName: "Created Date", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
         { field: "tray_id", headerName: "Tray ID", flex: 1 },
         { field: "tray_status", headerName: "Status", width: 120 },
         { field: "tray_height", headerName: "Height", width: 100 },
         { field: "tray_weight", headerName: "Weight (kg)", width: 120, valueFormatter: (params) => params.value ? (params.value / 1000).toFixed(2) : "-" },
         { field: "tray_divider", headerName: "Divider", width: 100 },
-        { field: "updated_at", headerName: "Updated At", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "tray_lockcount", headerName: "Lock Count", width: 110 },
+        { field: "updated_at", headerName: "Updated At", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
       ],
     },
     rack_transaction: {
@@ -107,13 +128,13 @@ const Reports = () => {
       icon: <Layers className="w-4 h-4" />,
       endpoint: "https://amsstores1.leapmile.com/robotmanager/slots",
       columns: [
-        { field: "id", headerName: "S.No", width: 80, valueGetter: (params) => params.node?.rowIndex ? params.node.rowIndex + 1 : 1 },
-        { field: "created_at", headerName: "Created Date", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "created_at", headerName: "Created Date", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
         { field: "slot_id", headerName: "Slot ID", flex: 1 },
         { field: "slot_name", headerName: "Slot Name", flex: 1 },
         { field: "rack", headerName: "Rack", width: 80 },
         { field: "row", headerName: "Row", width: 80 },
         { field: "slot", headerName: "Slot", width: 80 },
+        { field: "depth", headerName: "Depth", width: 80 },
         { field: "tray_id", headerName: "Tray ID", flex: 1 },
         { field: "slot_status", headerName: "Status", width: 120 },
       ],
@@ -123,13 +144,13 @@ const Reports = () => {
       icon: <AlertTriangle className="w-4 h-4" />,
       endpoint: "https://amsstores1.leapmile.com/robotmanager/tasks?task_status=failed",
       columns: [
-        { field: "id", headerName: "S.No", width: 80, valueGetter: (params) => params.node?.rowIndex ? params.node.rowIndex + 1 : 1 },
-        { field: "created_at", headerName: "Failure Date", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "created_at", headerName: "Failure Date", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
         { field: "task_id", headerName: "Task ID", flex: 1 },
         { field: "tray_id", headerName: "Tray ID", flex: 1 },
         { field: "order_reference_id", headerName: "Order Ref", flex: 1 },
         { field: "task_status", headerName: "Status", width: 120 },
-        { field: "updated_at", headerName: "Updated At", flex: 1, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : "-" },
+        { field: "tags", headerName: "Tags", flex: 1, valueFormatter: (params) => Array.isArray(params.value) ? params.value.join(", ") : "-" },
+        { field: "updated_at", headerName: "Updated At", flex: 1, valueFormatter: (params) => formatDateTime(params.value) },
       ],
     },
   }), []);
@@ -162,15 +183,27 @@ const Reports = () => {
     setLoading(true);
     try {
       const config = reportConfigs[reportType];
-      const separator = config.endpoint.includes("?") ? "&" : "?";
-      const url = `${config.endpoint}${separator}num_records=${pageSize}&offset=${(currentPage - 1) * pageSize}`;
+      let url = config.endpoint;
+      const separator = url.includes("?") ? "&" : "?";
+      url = `${url}${separator}num_records=${pageSize}&offset=${(currentPage - 1) * pageSize}`;
       
-      const response = await fetch(url, {
+      let response = await fetch(url, {
         headers: { 
           "Authorization": AUTH_TOKEN, 
           "Content-Type": "application/json" 
         }
       });
+
+      // Fallback to /nanostore/items if /nanostore/stock fails for product_stock
+      if (!response.ok && reportType === "product_stock") {
+        const fallbackUrl = `https://amsstores1.leapmile.com/nanostore/items?num_records=${pageSize}&offset=${(currentPage - 1) * pageSize}`;
+        response = await fetch(fallbackUrl, {
+          headers: { 
+            "Authorization": AUTH_TOKEN, 
+            "Content-Type": "application/json" 
+          }
+        });
+      }
 
       if (response.status === 404) {
         setRowData([]);
@@ -183,8 +216,18 @@ const Reports = () => {
       }
 
       const data = await response.json();
-      setRowData(data.records || []);
-      setTotalCount(data.count || data.rowcount || 0);
+      
+      // Map item_quantity to stock for product_stock report
+      let records = data.records || [];
+      if (reportType === "product_stock") {
+        records = records.map((item: any) => ({
+          ...item,
+          stock: item.stock || item.item_quantity || 0,
+        }));
+      }
+      
+      setRowData(records);
+      setTotalCount(data.total_count || data.count || data.rowcount || 0);
     } catch (error) {
       toast({
         title: "Error",
@@ -233,12 +276,18 @@ const Reports = () => {
         const field = col.field as string;
         let value = row[field];
         if (field === "created_at" || field === "updated_at") {
-          value = value ? new Date(value).toLocaleString() : "-";
+          value = value ? formatDateTime(value) : "-";
         }
         if (field === "tray_weight") {
           value = value ? (value / 1000).toFixed(2) : "-";
         }
-        return `"${value || ""}"`;
+        if (field === "stock") {
+          value = row.stock || row.item_quantity || 0;
+        }
+        if (field === "tags" && Array.isArray(value)) {
+          value = value.join(", ");
+        }
+        return `"${value ?? ""}"`;
       }).join(",")
     ).join("\n");
 
@@ -247,7 +296,7 @@ const Reports = () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${reportType}_${new Date().toISOString().split("T")[0]}.csv`;
+    a.download = `${reportConfigs[reportType].label.replace(/\s+/g, "_")}_${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -279,9 +328,9 @@ const Reports = () => {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="bg-primary/10 px-4 py-2 rounded-lg">
+                <div className="bg-primary/10 px-4 py-2 rounded-lg text-center">
                   <p className="text-xs text-muted-foreground">Total Slots Occupied</p>
-                  <p className="text-lg font-bold text-primary">{occupiedPercent.toFixed(2)}%</p>
+                  <p className="text-lg font-bold text-primary">{occupiedPercent.toFixed(2)} %</p>
                 </div>
               </div>
             </div>
@@ -290,9 +339,10 @@ const Reports = () => {
           {/* Controls Section */}
           <div className="bg-card rounded-lg border border-border p-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <label className="text-sm font-medium text-muted-foreground">Reports:</label>
                 <Select value={reportType} onValueChange={(value) => setReportType(value as ReportType)}>
-                  <SelectTrigger className="w-[280px]">
+                  <SelectTrigger className="w-[260px]">
                     <SelectValue placeholder="Select Report Type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -308,41 +358,37 @@ const Reports = () => {
                 </Select>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={handleRefresh} disabled={loading}>
-                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-                  Refresh
-                </Button>
                 <Button variant="outline" size="sm" onClick={handleDownload} disabled={loading || rowData.length === 0}>
                   <Download className="w-4 h-4 mr-2" />
                   Download
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleRefresh} disabled={loading}>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+                  Refresh
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* Pagination Info */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted-foreground">
+          {/* Pagination Info - Top */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted-foreground px-1">
             <span>
               {totalCount > 0 ? `${startRecord} to ${endRecord} of ${totalCount}` : "No records"}.
               {totalPages > 0 && ` Page ${currentPage} of ${totalPages}`}
             </span>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                disabled={currentPage <= 1 || loading}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                disabled={currentPage >= totalPages || loading}
-              >
-                Next
-              </Button>
+              <label className="text-sm">Page Size:</label>
+              <Select value={pageSize.toString()} onValueChange={(value) => { setPageSize(Number(value)); setCurrentPage(1); }}>
+                <SelectTrigger className="w-[80px] h-8">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                  <SelectItem value="200">200</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -376,7 +422,7 @@ const Reports = () => {
 
           {/* Bottom Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-2 flex-wrap">
               <Button
                 variant="outline"
                 size="sm"
