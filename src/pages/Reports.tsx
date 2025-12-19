@@ -249,7 +249,13 @@ const Reports = () => {
       flex: 1,
       minWidth: 150,
     },
-    { field: "order_ref_id", headerName: "Order Ref ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    {
+      field: "order_ref_id",
+      headerName: "Order Ref ID",
+      flex: 1,
+      minWidth: 120,
+      valueFormatter: (p) => p.value ?? "N/A",
+    },
     { field: "activity", headerName: "Activity", flex: 0.8, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "item_id", headerName: "Item ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     {
@@ -305,7 +311,7 @@ const Reports = () => {
     };
     const url = withQuery(`${NANOSTORE_BASE}/trays_for_order`, params);
     const { data } = await apiGet<any>(url);
-    
+
     if (data.status === "success" && data.count !== 0) {
       return (data.records || []).map((item: any) => ({
         transaction_date: formatDateTime(item.updated_at),
@@ -329,7 +335,7 @@ const Reports = () => {
     };
     const url = withQuery(`${NANOSTORE_BASE}/transactions`, params);
     const { data } = await apiGet<any>(url);
-    
+
     if (data.status === "success") {
       return (data.records || []).map((item: any) => ({
         transaction_date: formatDateTime(item.updated_at),
@@ -356,7 +362,7 @@ const Reports = () => {
     };
     const url = withQuery(`${NANOSTORE_BASE}/orders`, params);
     const { data } = await apiGet<any>(url);
-    
+
     if (data.status === "success") {
       return (data.records || []).map((item: any) => ({
         transaction_date: formatDateTime(item.updated_at),
@@ -381,20 +387,20 @@ const Reports = () => {
     };
     const url = withQuery(`${NANOSTORE_BASE}/trays_for_order`, params);
     const { data } = await apiGet<any>(url);
-    
+
     if (data.status === "success") {
       const records = data.records || [];
-      
+
       // Group by tray_id (matching Python logic)
       const trayMap: Record<string, any> = {};
       const trayItemsMap: Record<string, Set<string>> = {};
       const trayQuantityMap: Record<string, number> = {};
-      
+
       for (const item of records) {
         const trayId = item.tray_id || "";
         const itemId = item.item_id || "";
         const availableQty = item.available_quantity || 0;
-        
+
         if (!trayMap[trayId]) {
           trayMap[trayId] = {
             transaction_date: formatDateTime(item.updated_at),
@@ -409,13 +415,13 @@ const Reports = () => {
           trayItemsMap[trayId] = new Set();
           trayQuantityMap[trayId] = 0;
         }
-        
+
         if (itemId) {
           trayItemsMap[trayId].add(itemId);
         }
         trayQuantityMap[trayId] += availableQty;
       }
-      
+
       // Build final result
       return Object.entries(trayMap).map(([trayId, trayData]) => {
         const totalQty = trayQuantityMap[trayId];
@@ -435,26 +441,26 @@ const Reports = () => {
     // First get robot info to know total racks and slots per rack
     const robotUrl = `${ROBOTMANAGER_BASE}/robots`;
     const { data: robotData } = await apiGet<any>(robotUrl);
-    
+
     if (robotData.status !== "success" || !robotData.records?.length) {
       return [];
     }
-    
+
     const robot = robotData.records[0];
     const totalRacks = robot.robot_num_racks || 0;
     const robotNumRows = robot.robot_num_rows || 1;
     const robotNumSlots = robot.robot_num_slots || 1;
     const robotNumDepths = robot.robot_num_depths || 1;
     const totalSlotsPerRack = robotNumSlots * robotNumRows * robotNumDepths;
-    
+
     const results: any[] = [];
     const currentDateTime = formatDateTime(new Date().toISOString());
-    
+
     // Fetch slots for each rack
     for (let rack = 0; rack < totalRacks; rack++) {
       const slotsUrl = withQuery(`${ROBOTMANAGER_BASE}/slots`, { rack: rack.toString() });
       const { data: slotsData } = await apiGet<any>(slotsUrl);
-      
+
       let occupiedSlots = 0;
       if (slotsData.status === "success" && slotsData.count !== 0) {
         for (const slot of slotsData.records || []) {
@@ -463,10 +469,10 @@ const Reports = () => {
           }
         }
       }
-      
+
       const freeSlots = totalSlotsPerRack - occupiedSlots;
       const occupancyPercent = totalSlotsPerRack > 0 ? (occupiedSlots / totalSlotsPerRack) * 100 : 0;
-      
+
       results.push({
         transaction_date: currentDateTime,
         rack: `Rack ${rack}`,
@@ -475,7 +481,7 @@ const Reports = () => {
         rack_occupancy_percent: occupancyPercent.toFixed(2),
       });
     }
-    
+
     return results;
   };
 
@@ -486,7 +492,7 @@ const Reports = () => {
     };
     const url = withQuery(`${NANOSTORE_BASE}/order_failure`, params);
     const { data } = await apiGet<any>(url);
-    
+
     if (data.status === "success") {
       return (data.records || []).map((item: any) => ({
         transaction_date: formatDateTime(item.updated_at),
@@ -533,7 +539,7 @@ const Reports = () => {
     setLoading(true);
     try {
       let records: any[] = [];
-      
+
       switch (reportType) {
         case "product_stock":
           records = await fetchProductStock();
@@ -556,7 +562,7 @@ const Reports = () => {
         default:
           records = [];
       }
-      
+
       setRowData(records);
     } catch (error) {
       if (error instanceof Error && error.message === "AUTH_TOKEN_MISSING") {
@@ -676,7 +682,7 @@ const Reports = () => {
         <div
           className="ag-theme-quartz"
           style={{
-            height: "calc(100vh - 200px)",
+            height: "calc(100vh - 145px)",
             width: "100%",
             backgroundColor: "white",
             borderRadius: "8px",
