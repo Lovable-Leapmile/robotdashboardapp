@@ -648,9 +648,8 @@ const Reports = () => {
             <img src={noRecordsImage} alt="No Record found" className="w-48 sm:w-[340px]" />
           </div>
         ) : (
-          <div className="ag-theme-quartz w-full overflow-visible" style={{ height: "calc(100vh - 145px)" }}>
+          <div className="ag-theme-quartz w-full" style={{ height: "calc(100vh - 145px)" }}>
             <AgGridReact
-              ref={gridApiRef}
               rowData={rowData}
               columnDefs={getColumnsForReport(reportType)}
               defaultColDef={{
@@ -658,21 +657,16 @@ const Reports = () => {
                 filter: true,
                 resizable: true,
                 minWidth: 80,
-                cellStyle: {
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                },
               }}
               animateRows={true}
               pagination={true}
               paginationPageSize={50}
               paginationPageSizeSelector={[25, 50, 100, 200]}
               rowHeight={35}
-              popupParent={document.body}
               enableCellTextSelection={true}
               ensureDomOrder={true}
               onGridReady={(params) => {
+                gridApiRef.current = params.api;
                 params.api.sizeColumnsToFit();
               }}
             />
