@@ -5,7 +5,6 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ColDef, ModuleRegistry, AllCommunityModule } from "ag-grid-community";
-import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { apiGet, NANOSTORE_BASE, ROBOTMANAGER_BASE, withQuery } from "@/lib/api";
@@ -25,19 +24,17 @@ type ReportType =
   | "rack_transaction"
   | "order_failure_transaction";
 
+// Format date as YYYY-MM-DD HH:mm (matching Python logic)
 const formatDateTime = (value: string | null | undefined): string => {
-  if (!value) return "N/A";
+  if (!value) return "";
   try {
-    return format(new Date(value), "dd-MM-yyyy HH:mm:ss");
-  } catch {
-    return value;
-  }
-};
-
-const formatDate = (value: string | null | undefined): string => {
-  if (!value) return "N/A";
-  try {
-    return format(new Date(value), "dd-MM-yyyy");
+    const date = new Date(value);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   } catch {
     return value;
   }
@@ -65,31 +62,29 @@ const Reports = () => {
     order_failure_transaction: "Order Failure Transaction",
   };
 
-  // Product Stock Report: Transaction Date, Receive Date, Item Id, Stock, Tray ID, Tray Weight(Kg), Item Description
+  // Product Stock Report columns (matching Python: Transaction Date, Receive Date, Item Id, Stock, Tray ID, Tray Weight (kg), Item Description)
   const productStockColumns: ColDef[] = [
     {
-      field: "updated_at",
+      field: "transaction_date",
       headerName: "Transaction Date",
       flex: 1,
       minWidth: 150,
-      valueFormatter: (p) => formatDateTime(p.value),
     },
     {
-      field: "created_at",
+      field: "receive_date",
       headerName: "Receive Date",
       flex: 1,
       minWidth: 120,
-      valueFormatter: (p) => formatDate(p.value),
     },
     { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "item_quantity", headerName: "Stock", flex: 0.7, minWidth: 80, valueFormatter: (p) => p.value ?? 0 },
+    { field: "stock", headerName: "Stock", flex: 0.7, minWidth: 80, valueFormatter: (p) => p.value ?? 0 },
     { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     {
-      field: "tray_weight",
-      headerName: "Tray Weight(Kg)",
+      field: "tray_weight_kg",
+      headerName: "Tray Weight (kg)",
       flex: 1,
       minWidth: 130,
-      valueFormatter: (p) => (p.value ? (p.value / 1000).toFixed(2) : "N/A"),
+      valueFormatter: (p) => p.value ?? "N/A",
     },
     {
       field: "item_description",
@@ -100,17 +95,16 @@ const Reports = () => {
     },
   ];
 
-  // Order Product Transaction: Transaction Date, Activity Type, Order Id, User Id, User Name, User Phone, Tray ID, Item Id, Item Processed Quantity
+  // Order Product Transaction columns (matching Python: Transaction Date, Activity Type, Order Id, User Id, User Name, User Phone, Tray ID, Item Id, Item Processed Qty)
   const orderProductColumns: ColDef[] = [
     {
-      field: "updated_at",
+      field: "transaction_date",
       headerName: "Transaction Date",
       flex: 1,
       minWidth: 150,
-      valueFormatter: (p) => formatDateTime(p.value),
     },
     {
-      field: "transaction_type",
+      field: "activity_type",
       headerName: "Activity Type",
       flex: 0.8,
       minWidth: 110,
@@ -123,33 +117,39 @@ const Reports = () => {
     { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     {
-      field: "picked_count",
-      headerName: "Item Processed Quantity",
+      field: "item_processed_qty",
+      headerName: "Item Processed Qty",
       flex: 1,
-      minWidth: 170,
+      minWidth: 150,
       valueFormatter: (p) => p.value ?? 0,
+    },
+    {
+      field: "order_external_reference",
+      headerName: "Order External Reference",
+      flex: 1,
+      minWidth: 180,
+      valueFormatter: (p) => p.value ?? "N/A",
     },
   ];
 
-  // Order Tray Transaction: Transaction Date, Order Id, Status, Tray ID, Station, Item Id, Item Order Quantity, Order Ref Id
+  // Order Tray Transaction columns (matching Python: Transaction Date, Order Id, Status, Tray ID, Station, Item Id, Item Order Qty, Order Ref Id)
   const orderTrayColumns: ColDef[] = [
     {
-      field: "created_at",
+      field: "transaction_date",
       headerName: "Transaction Date",
       flex: 1,
       minWidth: 150,
-      valueFormatter: (p) => formatDateTime(p.value),
     },
     { field: "order_id", headerName: "Order Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "status", headerName: "Status", flex: 0.8, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "station_name", headerName: "Station", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "station", headerName: "Station", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     {
-      field: "item_order_quantity",
-      headerName: "Item Order Quantity",
+      field: "item_order_qty",
+      headerName: "Item Order Qty",
       flex: 1,
-      minWidth: 150,
+      minWidth: 130,
       valueFormatter: (p) => p.value ?? 0,
     },
     {
@@ -161,16 +161,15 @@ const Reports = () => {
     },
   ];
 
-  // Tray Transaction: Transaction Date, Tray Id, Tray Status, Division, Tray Weight(Kg), Tray Height, Number of Items, Total Available Quantity, Has Item
+  // Tray Transaction columns (matching Python: Transaction Date, Tray ID, Tray Status, Division, Tray Weight (kg), Tray Height, Number of Items, Total Available Quantity, Has Item)
   const trayTransactionColumns: ColDef[] = [
     {
-      field: "updated_at",
+      field: "transaction_date",
       headerName: "Transaction Date",
       flex: 1,
       minWidth: 150,
-      valueFormatter: (p) => formatDateTime(p.value),
     },
-    { field: "tray_id", headerName: "Tray Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "tray_status",
       headerName: "Tray Status",
@@ -178,13 +177,13 @@ const Reports = () => {
       minWidth: 100,
       valueFormatter: (p) => p.value ?? "N/A",
     },
-    { field: "tray_divider", headerName: "Division", flex: 0.7, minWidth: 90, valueFormatter: (p) => p.value ?? 0 },
+    { field: "division", headerName: "Division", flex: 0.7, minWidth: 90, valueFormatter: (p) => p.value ?? "N/A" },
     {
-      field: "tray_weight",
-      headerName: "Tray Weight(Kg)",
+      field: "tray_weight_kg",
+      headerName: "Tray Weight (kg)",
       flex: 1,
       minWidth: 130,
-      valueFormatter: (p) => (p.value ? (p.value / 1000).toFixed(2) : "N/A"),
+      valueFormatter: (p) => p.value ?? "N/A",
     },
     {
       field: "tray_height",
@@ -216,16 +215,15 @@ const Reports = () => {
     },
   ];
 
-  // Rack Transaction: Transaction Date, Rack, Occupied Slots, Free Slots, Rack Occupancy In %
+  // Rack Transaction columns (matching Python: Transaction Date, Rack, Occupied Slots, Free Slots, Rack Occupancy in %)
   const rackTransactionColumns: ColDef[] = [
     {
-      field: "updated_at",
+      field: "transaction_date",
       headerName: "Transaction Date",
       flex: 1,
       minWidth: 150,
-      valueFormatter: (p) => formatDateTime(p.value),
     },
-    { field: "rack_name", headerName: "Rack", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "rack", headerName: "Rack", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "occupied_slots",
       headerName: "Occupied Slots",
@@ -236,23 +234,22 @@ const Reports = () => {
     { field: "free_slots", headerName: "Free Slots", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? 0 },
     {
       field: "rack_occupancy_percent",
-      headerName: "Rack Occupancy In %",
+      headerName: "Rack Occupancy in %",
       flex: 1,
       minWidth: 160,
-      valueFormatter: (p) => (p.value !== undefined ? `${Number(p.value).toFixed(2)}%` : "N/A"),
+      valueFormatter: (p) => (p.value !== undefined ? `${Number(p.value).toFixed(2)}` : "N/A"),
     },
   ];
 
-  // Order Failure Transaction: Transaction Date, Order Id, Activity, Item ID, Movement Type, Order Type, Item Order Quantity, Message
+  // Order Failure Transaction columns (matching Python: Transaction Date, Order Ref ID, Activity, Item ID, Movement Type, Order Type, Item Order Qty, Message)
   const orderFailureColumns: ColDef[] = [
     {
-      field: "created_at",
+      field: "transaction_date",
       headerName: "Transaction Date",
       flex: 1,
       minWidth: 150,
-      valueFormatter: (p) => formatDateTime(p.value),
     },
-    { field: "order_id", headerName: "Order Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "order_ref_id", headerName: "Order Ref ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "activity", headerName: "Activity", flex: 0.8, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "item_id", headerName: "Item ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     {
@@ -270,10 +267,10 @@ const Reports = () => {
       valueFormatter: (p) => p.value ?? "N/A",
     },
     {
-      field: "item_order_quantity",
-      headerName: "Item Order Quantity",
+      field: "item_order_qty",
+      headerName: "Item Order Qty",
       flex: 1,
-      minWidth: 150,
+      minWidth: 130,
       valueFormatter: (p) => p.value ?? 0,
     },
     { field: "message", headerName: "Message", flex: 1.5, minWidth: 200, valueFormatter: (p) => p.value ?? "N/A" },
@@ -298,70 +295,224 @@ const Reports = () => {
     }
   };
 
-  const getEndpointForReport = (type: ReportType): string => {
-    const robotManagerUrl = (path: string) =>
-      robotId ? withQuery(`${ROBOTMANAGER_BASE}${path}`, { robot_id: robotId }) : `${ROBOTMANAGER_BASE}${path}`;
-
-    switch (type) {
-      case "product_stock":
-        return `${NANOSTORE_BASE}/items`;
-      case "order_product_transaction":
-        return `${NANOSTORE_BASE}/items/usage?order_by=DESC`;
-      case "order_tray_transaction":
-        return robotManagerUrl("/task");
-      case "tray_transaction":
-        return robotManagerUrl("/trays");
-      case "rack_transaction":
-        return robotManagerUrl("/slots");
-      case "order_failure_transaction":
-        return robotManagerUrl("/task?task_status=failed");
-      default:
-        return `${NANOSTORE_BASE}/items`;
+  // Fetch Product Stock Report (matching Python get_stocks_products)
+  const fetchProductStock = async (): Promise<any[]> => {
+    const params = {
+      has_item: "True",
+      num_records: "100000000",
+      order_by_field: "updated_at",
+      order_by_type: "DESC",
+    };
+    const url = withQuery(`${NANOSTORE_BASE}/trays_for_order`, params);
+    const { data } = await apiGet<any>(url);
+    
+    if (data.status === "success" && data.count !== 0) {
+      return (data.records || []).map((item: any) => ({
+        transaction_date: formatDateTime(item.updated_at),
+        receive_date: item.inbound_date || "",
+        item_id: item.item_id,
+        stock: item.available_quantity,
+        tray_id: item.tray_id,
+        tray_weight_kg: item.tray_weight ? (parseFloat(item.tray_weight) / 1000).toFixed(3) : "",
+        item_description: item.item_description,
+      }));
     }
+    return [];
   };
 
-  const aggregateSlotsByRack = (slots: any[]) => {
-    const rackMap: Record<string, { total: number; occupied: number; updated_at: string }> = {};
-
-    slots.forEach((slot) => {
-      // Extract rack name from slot_id (e.g., "R01-C01-L01" -> "R01")
-      const rackName = slot.slot_id?.split("-")[0] || slot.rack_name || "Unknown";
-      if (!rackMap[rackName]) {
-        rackMap[rackName] = { total: 0, occupied: 0, updated_at: slot.updated_at || "" };
-      }
-      rackMap[rackName].total++;
-      if (slot.tray_id) {
-        rackMap[rackName].occupied++;
-      }
-      if (slot.updated_at && slot.updated_at > rackMap[rackName].updated_at) {
-        rackMap[rackName].updated_at = slot.updated_at;
-      }
-    });
-
-    return Object.entries(rackMap)
-      .map(([rackName, data]) => ({
-        rack_name: rackName,
-        occupied_slots: data.occupied,
-        free_slots: data.total - data.occupied,
-        rack_occupancy_percent: data.total > 0 ? (data.occupied / data.total) * 100 : 0,
-        updated_at: data.updated_at,
-      }))
-      .sort((a, b) => a.rack_name.localeCompare(b.rack_name));
+  // Fetch Order Product Transaction (matching Python get_ProductTransactionHistory)
+  const fetchOrderProductTransaction = async (): Promise<any[]> => {
+    const params = {
+      num_records: "100000000",
+      order_by_field: "updated_at",
+      order_by_type: "DESC",
+    };
+    const url = withQuery(`${NANOSTORE_BASE}/transactions`, params);
+    const { data } = await apiGet<any>(url);
+    
+    if (data.status === "success") {
+      return (data.records || []).map((item: any) => ({
+        transaction_date: formatDateTime(item.updated_at),
+        activity_type: item.order_type,
+        order_id: item.order_id,
+        user_id: item.user_id,
+        user_name: item.user_name,
+        user_phone: item.user_phone,
+        tray_id: item.tray_id,
+        item_id: item.item_id,
+        item_processed_qty: item.transaction_item_quantity,
+        order_external_reference: item.order_external_reference,
+      }));
+    }
+    return [];
   };
 
+  // Fetch Order Tray Transaction (matching Python get_order_trays_transaction)
+  const fetchOrderTrayTransaction = async (): Promise<any[]> => {
+    const params = {
+      num_records: "100000000",
+      order_by_field: "updated_at",
+      order_by_type: "DESC",
+    };
+    const url = withQuery(`${NANOSTORE_BASE}/orders`, params);
+    const { data } = await apiGet<any>(url);
+    
+    if (data.status === "success") {
+      return (data.records || []).map((item: any) => ({
+        transaction_date: formatDateTime(item.updated_at),
+        order_id: item.id,
+        status: item.tray_status,
+        tray_id: item.tray_id,
+        station: item.station_id,
+        item_id: item.item_id,
+        item_order_qty: item.quantity,
+        order_ref_id: item.order_ref,
+      }));
+    }
+    return [];
+  };
+
+  // Fetch Tray Transaction (matching Python get_trayTransactionHistory with grouping)
+  const fetchTrayTransaction = async (): Promise<any[]> => {
+    const params = {
+      num_records: "100000000",
+      order_by_field: "updated_at",
+      order_by_type: "DESC",
+    };
+    const url = withQuery(`${NANOSTORE_BASE}/trays_for_order`, params);
+    const { data } = await apiGet<any>(url);
+    
+    if (data.status === "success") {
+      const records = data.records || [];
+      
+      // Group by tray_id (matching Python logic)
+      const trayMap: Record<string, any> = {};
+      const trayItemsMap: Record<string, Set<string>> = {};
+      const trayQuantityMap: Record<string, number> = {};
+      
+      for (const item of records) {
+        const trayId = item.tray_id || "";
+        const itemId = item.item_id || "";
+        const availableQty = item.available_quantity || 0;
+        
+        if (!trayMap[trayId]) {
+          trayMap[trayId] = {
+            transaction_date: formatDateTime(item.updated_at),
+            tray_id: trayId,
+            tray_status: item.tray_status,
+            division: item.division,
+            tray_weight_kg: item.tray_weight ? (parseFloat(item.tray_weight) / 1000).toFixed(3) : "",
+            tray_height: item.tray_height,
+            number_of_items: 0,
+            total_available_quantity: 0,
+          };
+          trayItemsMap[trayId] = new Set();
+          trayQuantityMap[trayId] = 0;
+        }
+        
+        if (itemId) {
+          trayItemsMap[trayId].add(itemId);
+        }
+        trayQuantityMap[trayId] += availableQty;
+      }
+      
+      // Build final result
+      return Object.entries(trayMap).map(([trayId, trayData]) => {
+        const totalQty = trayQuantityMap[trayId];
+        return {
+          ...trayData,
+          number_of_items: trayItemsMap[trayId].size,
+          total_available_quantity: totalQty,
+          has_item: totalQty > 0,
+        };
+      });
+    }
+    return [];
+  };
+
+  // Fetch Rack Transaction (matching Python get_robotTransactionHistory)
+  const fetchRackTransaction = async (): Promise<any[]> => {
+    // First get robot info to know total racks and slots per rack
+    const robotUrl = `${ROBOTMANAGER_BASE}/robots`;
+    const { data: robotData } = await apiGet<any>(robotUrl);
+    
+    if (robotData.status !== "success" || !robotData.records?.length) {
+      return [];
+    }
+    
+    const robot = robotData.records[0];
+    const totalRacks = robot.robot_num_racks || 0;
+    const robotNumRows = robot.robot_num_rows || 1;
+    const robotNumSlots = robot.robot_num_slots || 1;
+    const robotNumDepths = robot.robot_num_depths || 1;
+    const totalSlotsPerRack = robotNumSlots * robotNumRows * robotNumDepths;
+    
+    const results: any[] = [];
+    const currentDateTime = formatDateTime(new Date().toISOString());
+    
+    // Fetch slots for each rack
+    for (let rack = 0; rack < totalRacks; rack++) {
+      const slotsUrl = withQuery(`${ROBOTMANAGER_BASE}/slots`, { rack: rack.toString() });
+      const { data: slotsData } = await apiGet<any>(slotsUrl);
+      
+      let occupiedSlots = 0;
+      if (slotsData.status === "success" && slotsData.count !== 0) {
+        for (const slot of slotsData.records || []) {
+          if (slot.tray_id !== null) {
+            occupiedSlots++;
+          }
+        }
+      }
+      
+      const freeSlots = totalSlotsPerRack - occupiedSlots;
+      const occupancyPercent = totalSlotsPerRack > 0 ? (occupiedSlots / totalSlotsPerRack) * 100 : 0;
+      
+      results.push({
+        transaction_date: currentDateTime,
+        rack: `Rack ${rack}`,
+        occupied_slots: occupiedSlots,
+        free_slots: freeSlots,
+        rack_occupancy_percent: occupancyPercent.toFixed(2),
+      });
+    }
+    
+    return results;
+  };
+
+  // Fetch Order Failure Transaction (matching Python get_order_failure_transaction)
+  const fetchOrderFailureTransaction = async (): Promise<any[]> => {
+    const params = {
+      num_records: "100000000",
+    };
+    const url = withQuery(`${NANOSTORE_BASE}/order_failure`, params);
+    const { data } = await apiGet<any>(url);
+    
+    if (data.status === "success") {
+      return (data.records || []).map((item: any) => ({
+        transaction_date: formatDateTime(item.updated_at),
+        order_ref_id: item.order_ref,
+        activity: item.activity,
+        item_id: item.item_id,
+        movement_type: item.station_id,
+        order_type: item.order_type,
+        item_order_qty: item.quantity,
+        message: item.message,
+      }));
+    }
+    return [];
+  };
+
+  // Calculate occupied percent (matching Python get_robotUsageTransaction)
   const fetchOccupiedPercent = useCallback(async () => {
     try {
       const [slotsResult, traysResult] = await Promise.all([
-        apiGet<any>(`${ROBOTMANAGER_BASE}/slots_count?slot_status=active`),
-        apiGet<any>(`${ROBOTMANAGER_BASE}/trays?tray_status=active`),
+        apiGet<any>(withQuery(`${ROBOTMANAGER_BASE}/slots`, { num_records: "1" })),
+        apiGet<any>(withQuery(`${ROBOTMANAGER_BASE}/trays`, { tray_status: "active" })),
       ]);
 
-      const slotsData = slotsResult.data as any;
-      const traysData = traysResult.data as any;
-
-      const totalSlots = slotsData.records?.[0]?.total_count || 0;
-      const occupiedSlots = traysData.total_count ?? traysData.count ?? traysData.records?.length ?? 0;
-      const percent = totalSlots > 0 ? (occupiedSlots / totalSlots) * 100 : 0;
+      const totalSlots = slotsResult.data.total_count || 0;
+      const totalTrays = traysResult.data.count || 0;
+      const percent = totalSlots > 0 ? (totalTrays / totalSlots) * 100 : 0;
 
       setOccupiedPercent(percent);
     } catch (error) {
@@ -381,36 +532,31 @@ const Reports = () => {
   const fetchReportData = useCallback(async () => {
     setLoading(true);
     try {
-      const endpoint = getEndpointForReport(reportType);
-
-      const { res, data } = await apiGet<any>(endpoint);
-
-      if (res.status === 404) {
-        setRowData([]);
-        setLoading(false);
-        return;
+      let records: any[] = [];
+      
+      switch (reportType) {
+        case "product_stock":
+          records = await fetchProductStock();
+          break;
+        case "order_product_transaction":
+          records = await fetchOrderProductTransaction();
+          break;
+        case "order_tray_transaction":
+          records = await fetchOrderTrayTransaction();
+          break;
+        case "tray_transaction":
+          records = await fetchTrayTransaction();
+          break;
+        case "rack_transaction":
+          records = await fetchRackTransaction();
+          break;
+        case "order_failure_transaction":
+          records = await fetchOrderFailureTransaction();
+          break;
+        default:
+          records = [];
       }
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      let records = (data as any).records || [];
-
-      // For rack transaction, aggregate slots by rack
-      if (reportType === "rack_transaction") {
-        records = aggregateSlotsByRack(records);
-      }
-
-      // For tray transaction, add computed fields
-      if (reportType === "tray_transaction") {
-        records = records.map((r: any) => ({
-          ...r,
-          has_item: r.tray_lockcount > 0 || r.number_of_items > 0,
-        }));
-      }
-
-      console.log(`Fetched ${reportType}:`, records.length);
+      
       setRowData(records);
     } catch (error) {
       if (error instanceof Error && error.message === "AUTH_TOKEN_MISSING") {
@@ -469,15 +615,6 @@ const Reports = () => {
           .map((col) => {
             const field = col.field as string;
             let value = row[field];
-            if (field.includes("_at")) {
-              value = value ? formatDateTime(value) : "N/A";
-            }
-            if (field === "tray_weight") {
-              value = value ? (value / 1000).toFixed(2) : "N/A";
-            }
-            if (field === "rack_occupancy_percent") {
-              value = value !== undefined ? `${Number(value).toFixed(2)}%` : "N/A";
-            }
             if (field === "has_item") {
               value = value ? "Yes" : "No";
             }
@@ -503,73 +640,71 @@ const Reports = () => {
 
       <main className="p-2 sm:p-4">
         {/* Header Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
             <Select value={reportType} onValueChange={(value: ReportType) => setReportType(value)}>
-              <SelectTrigger className="w-full sm:w-[280px] bg-white border-gray-300">
-                <SelectValue placeholder="Select Report Type" />
+              <SelectTrigger className="w-[280px] bg-white">
+                <SelectValue placeholder="Select Report" />
               </SelectTrigger>
-              <SelectContent className="bg-white border-gray-300 z-50">
-                <SelectItem value="product_stock">Product Stock Report</SelectItem>
-                <SelectItem value="order_product_transaction">Order Product Transaction</SelectItem>
-                <SelectItem value="order_tray_transaction">Order Tray Transaction</SelectItem>
-                <SelectItem value="tray_transaction">Tray Transaction</SelectItem>
-                <SelectItem value="rack_transaction">Rack Transaction</SelectItem>
-                <SelectItem value="order_failure_transaction">Order Failure Transaction</SelectItem>
+              <SelectContent>
+                {Object.entries(reportLabels).map(([key, label]) => (
+                  <SelectItem key={key} value={key}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-md border">
+              <span className="text-sm text-gray-600">Occupied:</span>
+              <span className="text-sm font-semibold text-orange-500">{occupiedPercent.toFixed(2)}%</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="bg-blue-50 px-3 py-1.5 rounded text-sm">
-              Occupied: <span className="font-semibold text-blue-600">{occupiedPercent.toFixed(1)}%</span>
-            </div>
-            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={loading} className="bg-white">
-              <RefreshCw className={`w-4 h-4 mr-1 ${loading ? "animate-spin" : ""}`} />
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={loading}>
+              <RefreshCw className={`h-4 w-4 mr-1 ${loading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDownload}
-              disabled={loading || rowData.length === 0}
-              className="bg-white"
-            >
-              <Download className="w-4 h-4 mr-1" />
-              CSV
+            <Button variant="outline" size="sm" onClick={handleDownload} disabled={rowData.length === 0}>
+              <Download className="h-4 w-4 mr-1" />
+              Download
             </Button>
           </div>
         </div>
 
-        {/* Data Grid */}
-        {!loading && rowData.length === 0 ? (
-          <div className="flex justify-center items-center" style={{ height: "calc(100vh - 145px)" }}>
-            <img src={noRecordsImage} alt="No records found" className="w-48 sm:w-[340px]" />
-          </div>
-        ) : (
-          <div className="ag-theme-quartz w-full" style={{ height: "calc(100vh - 145px)" }}>
-            <AgGridReact
-              rowData={rowData}
-              columnDefs={getColumnsForReport(reportType)}
-              defaultColDef={{
-                resizable: true,
-                minWidth: 100,
-                sortable: true,
-                filter: true,
-              }}
-              pagination={true}
-              paginationPageSize={50}
-              paginationPageSizeSelector={[25, 50, 100, 200]}
-              rowHeight={35}
-              enableCellTextSelection={true}
-              ensureDomOrder={true}
-              onGridReady={(params) => {
-                gridApiRef.current = params.api;
-                params.api.sizeColumnsToFit();
-              }}
-            />
-          </div>
-        )}
+        {/* AG Grid Table */}
+        <div
+          className="ag-theme-quartz"
+          style={{
+            height: "calc(100vh - 200px)",
+            width: "100%",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            overflow: "hidden",
+          }}
+        >
+          <AgGridReact
+            ref={gridApiRef}
+            rowData={rowData}
+            columnDefs={getColumnsForReport(reportType)}
+            defaultColDef={{
+              sortable: true,
+              filter: true,
+              resizable: true,
+            }}
+            animateRows={true}
+            pagination={true}
+            paginationPageSize={50}
+            paginationPageSizeSelector={[25, 50, 100, 200]}
+            loading={loading}
+            overlayNoRowsTemplate={`
+              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                <img src="${noRecordsImage}" alt="No records" style="width: 120px; height: 120px; margin-bottom: 16px;" />
+                <span style="color: #6b7280; font-size: 14px;">No records found</span>
+              </div>
+            `}
+          />
+        </div>
       </main>
     </div>
   );
