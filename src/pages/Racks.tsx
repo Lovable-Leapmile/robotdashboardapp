@@ -271,17 +271,23 @@ const Racks = () => {
                   Row 1
                 </div>
                 <div className="flex gap-2 sm:gap-[10px]">
-                  {/* Depth 1 - Vertical Column */}
-                  <div className="flex flex-col gap-2 sm:gap-2.5">
-                    {row1Depth1Slots.map((slot, idx) => (
-                      <SlotBox key={`r1d1-${idx}`} slot={slot} />
-                    ))}
+                  {/* Depth 2 - Vertical Column (Left) */}
+                  <div className="flex flex-col items-center gap-2 sm:gap-2.5">
+                    <div className="flex flex-col gap-2 sm:gap-2.5">
+                      {row1Depth1Slots.map((slot, idx) => (
+                        <SlotBox key={`r1d1-${idx}`} slot={slot} />
+                      ))}
+                    </div>
+                    <div className="text-xs sm:text-sm font-medium mt-2" style={{ color: "#351c75" }}>Depth 2</div>
                   </div>
-                  {/* Depth 0 - Vertical Column */}
-                  <div className="flex flex-col gap-2 sm:gap-2.5">
-                    {row1Depth0Slots.map((slot, idx) => (
-                      <SlotBox key={`r1d0-${idx}`} slot={slot} />
-                    ))}
+                  {/* Depth 1 - Vertical Column (Right) */}
+                  <div className="flex flex-col items-center gap-2 sm:gap-2.5">
+                    <div className="flex flex-col gap-2 sm:gap-2.5">
+                      {row1Depth0Slots.map((slot, idx) => (
+                        <SlotBox key={`r1d0-${idx}`} slot={slot} />
+                      ))}
+                    </div>
+                    <div className="text-xs sm:text-sm font-medium mt-2" style={{ color: "#351c75" }}>Depth 1</div>
                   </div>
                 </div>
               </div>
@@ -293,7 +299,7 @@ const Racks = () => {
                   alt="Shuttle" 
                   className="h-full object-contain"
                   style={{ 
-                    opacity: 0.7,
+                    opacity: 0.6,
                     height: `${Math.max(row1Depth1Slots.length, row0Depth1Slots.length) * 55}px`
                   }}
                 />
@@ -306,17 +312,23 @@ const Racks = () => {
                     Row 0
                   </div>
                   <div className="flex gap-2 sm:gap-[10px]">
-                    {/* Depth 1 - Vertical Column */}
-                    <div className="flex flex-col gap-2 sm:gap-2.5">
-                      {row0Depth1Slots.map((slot, idx) => (
-                        <SlotBox key={`r0d1-${idx}`} slot={slot} />
-                      ))}
+                    {/* Depth 1 - Vertical Column (Left) */}
+                    <div className="flex flex-col items-center gap-2 sm:gap-2.5">
+                      <div className="flex flex-col gap-2 sm:gap-2.5">
+                        {row0Depth1Slots.map((slot, idx) => (
+                          <SlotBox key={`r0d1-${idx}`} slot={slot} />
+                        ))}
+                      </div>
+                      <div className="text-xs sm:text-sm font-medium mt-2" style={{ color: "#351c75" }}>Depth 1</div>
                     </div>
-                    {/* Depth 0 - Vertical Column */}
-                    <div className="flex flex-col gap-2 sm:gap-2.5">
-                      {row0Depth0Slots.map((slot, idx) => (
-                        <SlotBox key={`r0d0-${idx}`} slot={slot} />
-                      ))}
+                    {/* Depth 2 - Vertical Column (Right) */}
+                    <div className="flex flex-col items-center gap-2 sm:gap-2.5">
+                      <div className="flex flex-col gap-2 sm:gap-2.5">
+                        {row0Depth0Slots.map((slot, idx) => (
+                          <SlotBox key={`r0d0-${idx}`} slot={slot} />
+                        ))}
+                      </div>
+                      <div className="text-xs sm:text-sm font-medium mt-2" style={{ color: "#351c75" }}>Depth 2</div>
                     </div>
                   </div>
                 </div>
