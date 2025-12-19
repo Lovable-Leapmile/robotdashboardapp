@@ -30,7 +30,7 @@ type ReportType =
 const formatDateTime = (value: string | null | undefined): string => {
   if (!value) return "N/A";
   try {
-    return format(new Date(value), "dd-MM-yyyy HH:mm:ss");
+    return format(new Date(value), "dd-MM-yyyy HH:mm");
   } catch {
     return value;
   }
@@ -73,31 +73,31 @@ const Reports = () => {
       field: "updated_at",
       headerName: "Transaction Date",
       flex: 1,
-      minWidth: 150,
+      minWidth: 140,
       valueFormatter: (p) => formatDateTime(p.value),
     },
     {
       field: "created_at",
       headerName: "Receive Date",
       flex: 1,
-      minWidth: 120,
+      minWidth: 110,
       valueFormatter: (p) => formatDate(p.value),
     },
-    { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "item_quantity", headerName: "Stock", flex: 0.7, minWidth: 80, valueFormatter: (p) => p.value ?? 0 },
-    { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "item_quantity", headerName: "Stock", flex: 0.6, minWidth: 70, valueFormatter: (p) => p.value ?? 0 },
+    { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 110, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "tray_weight",
       headerName: "Tray Weight(Kg)",
-      flex: 1,
-      minWidth: 130,
+      flex: 0.9,
+      minWidth: 120,
       valueFormatter: (p) => (p.value ? (p.value / 1000).toFixed(2) : "N/A"),
     },
     {
       field: "item_description",
       headerName: "Item Description",
       flex: 1.5,
-      minWidth: 200,
+      minWidth: 180,
       valueFormatter: (p) => p.value ?? "N/A",
     },
   ];
@@ -108,27 +108,27 @@ const Reports = () => {
       field: "updated_at",
       headerName: "Transaction Date",
       flex: 1,
-      minWidth: 150,
+      minWidth: 140,
       valueFormatter: (p) => formatDateTime(p.value),
     },
     {
       field: "transaction_type",
       headerName: "Activity Type",
       flex: 0.8,
-      minWidth: 110,
+      minWidth: 100,
       valueFormatter: (p) => p.value ?? "N/A",
     },
-    { field: "order_id", headerName: "Order Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "user_id", headerName: "User Id", flex: 0.8, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "user_name", headerName: "User Name", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "user_phone", headerName: "User Phone", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "order_id", headerName: "Order Id", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "user_id", headerName: "User Id", flex: 0.8, minWidth: 90, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "user_name", headerName: "User Name", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "user_phone", headerName: "User Phone", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "picked_count",
       headerName: "Item Processed Quantity",
       flex: 1,
-      minWidth: 170,
+      minWidth: 160,
       valueFormatter: (p) => p.value ?? 0,
     },
   ];
@@ -139,26 +139,26 @@ const Reports = () => {
       field: "created_at",
       headerName: "Transaction Date",
       flex: 1,
-      minWidth: 150,
+      minWidth: 140,
       valueFormatter: (p) => formatDateTime(p.value),
     },
-    { field: "order_id", headerName: "Order Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "status", headerName: "Status", flex: 0.8, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "station_name", headerName: "Station", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "order_id", headerName: "Order Id", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "task_status", headerName: "Status", flex: 0.8, minWidth: 90, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "station_name", headerName: "Station", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "item_order_quantity",
       headerName: "Item Order Quantity",
       flex: 1,
-      minWidth: 150,
+      minWidth: 140,
       valueFormatter: (p) => p.value ?? 0,
     },
     {
       field: "order_ref_id",
       headerName: "Order Ref Id",
       flex: 1,
-      minWidth: 120,
+      minWidth: 100,
       valueFormatter: (p) => p.value ?? "N/A",
     },
   ];
@@ -169,51 +169,51 @@ const Reports = () => {
       field: "updated_at",
       headerName: "Transaction Date",
       flex: 1,
-      minWidth: 150,
+      minWidth: 140,
       valueFormatter: (p) => formatDateTime(p.value),
     },
-    { field: "tray_id", headerName: "Tray Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "tray_id", headerName: "Tray Id", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "tray_status",
       headerName: "Tray Status",
       flex: 0.8,
-      minWidth: 100,
+      minWidth: 90,
       valueFormatter: (p) => p.value ?? "N/A",
     },
-    { field: "tray_divider", headerName: "Division", flex: 0.7, minWidth: 90, valueFormatter: (p) => p.value ?? 0 },
+    { field: "tray_divider", headerName: "Division", flex: 0.6, minWidth: 80, valueFormatter: (p) => p.value ?? 0 },
     {
       field: "tray_weight",
       headerName: "Tray Weight(Kg)",
-      flex: 1,
-      minWidth: 130,
+      flex: 0.9,
+      minWidth: 120,
       valueFormatter: (p) => (p.value ? (p.value / 1000).toFixed(2) : "N/A"),
     },
     {
       field: "tray_height",
       headerName: "Tray Height",
-      flex: 0.8,
-      minWidth: 100,
+      flex: 0.7,
+      minWidth: 90,
       valueFormatter: (p) => p.value ?? "N/A",
     },
     {
       field: "number_of_items",
       headerName: "Number of Items",
-      flex: 1,
-      minWidth: 130,
+      flex: 0.9,
+      minWidth: 120,
       valueFormatter: (p) => p.value ?? 0,
     },
     {
       field: "total_available_quantity",
       headerName: "Total Available Quantity",
       flex: 1,
-      minWidth: 170,
+      minWidth: 160,
       valueFormatter: (p) => p.value ?? 0,
     },
     {
       field: "has_item",
       headerName: "Has Item",
-      flex: 0.7,
-      minWidth: 90,
+      flex: 0.6,
+      minWidth: 80,
       valueFormatter: (p) => (p.value ? "Yes" : "No"),
     },
   ];
@@ -224,15 +224,15 @@ const Reports = () => {
       field: "updated_at",
       headerName: "Transaction Date",
       flex: 1,
-      minWidth: 150,
+      minWidth: 140,
       valueFormatter: (p) => formatDateTime(p.value),
     },
-    { field: "rack_name", headerName: "Rack", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "rack", headerName: "Rack", flex: 0.8, minWidth: 80, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "occupied_slots",
       headerName: "Occupied Slots",
       flex: 1,
-      minWidth: 130,
+      minWidth: 120,
       valueFormatter: (p) => p.value ?? 0,
     },
     { field: "free_slots", headerName: "Free Slots", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? 0 },
@@ -240,7 +240,7 @@ const Reports = () => {
       field: "rack_occupancy_percent",
       headerName: "Rack Occupancy In %",
       flex: 1,
-      minWidth: 160,
+      minWidth: 150,
       valueFormatter: (p) => (p.value !== undefined ? `${Number(p.value).toFixed(2)}%` : "N/A"),
     },
   ];
@@ -251,34 +251,34 @@ const Reports = () => {
       field: "created_at",
       headerName: "Transaction Date",
       flex: 1,
-      minWidth: 150,
+      minWidth: 140,
       valueFormatter: (p) => formatDateTime(p.value),
     },
-    { field: "order_id", headerName: "Order Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "activity", headerName: "Activity", flex: 0.8, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
-    { field: "item_id", headerName: "Item ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "order_id", headerName: "Order Id", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "activity", headerName: "Activity", flex: 0.8, minWidth: 90, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "item_id", headerName: "Item ID", flex: 1, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "movement_type",
       headerName: "Movement Type",
       flex: 1,
-      minWidth: 130,
+      minWidth: 120,
       valueFormatter: (p) => p.value ?? "N/A",
     },
     {
       field: "order_type",
       headerName: "Order Type",
       flex: 0.8,
-      minWidth: 110,
+      minWidth: 100,
       valueFormatter: (p) => p.value ?? "N/A",
     },
     {
       field: "item_order_quantity",
       headerName: "Item Order Quantity",
       flex: 1,
-      minWidth: 150,
+      minWidth: 140,
       valueFormatter: (p) => p.value ?? 0,
     },
-    { field: "message", headerName: "Message", flex: 1.5, minWidth: 200, valueFormatter: (p) => p.value ?? "N/A" },
+    { field: "message", headerName: "Message", flex: 1.5, minWidth: 180, valueFormatter: (p) => p.value ?? "N/A" },
   ];
 
   const getColumnsForReport = (type: ReportType): ColDef[] => {
@@ -300,70 +300,53 @@ const Reports = () => {
     }
   };
 
-  const getEndpointForReport = (type: ReportType): string => {
-    switch (type) {
-      case "product_stock":
-        return "https://amsstores1.leapmile.com/nanostore/items";
-      case "order_product_transaction":
-        return "https://amsstores1.leapmile.com/nanostore/items/usage?order_by=DESC";
-      case "order_tray_transaction":
-        return "https://amsstores1.leapmile.com/robotmanager/task";
-      case "tray_transaction":
-        return "https://amsstores1.leapmile.com/robotmanager/trays";
-      case "rack_transaction":
-        return "https://amsstores1.leapmile.com/robotmanager/slots";
-      case "order_failure_transaction":
-        return "https://amsstores1.leapmile.com/robotmanager/task?task_status=failed";
-      default:
-        return "https://amsstores1.leapmile.com/nanostore/items";
-    }
-  };
-
+  // Aggregate slots by rack number for Rack Transaction report
   const aggregateSlotsByRack = (slots: any[]) => {
-    const rackMap: Record<string, { total: number; occupied: number; updated_at: string }> = {};
+    const rackMap: Record<number, { total: number; occupied: number; updated_at: string }> = {};
 
     slots.forEach((slot) => {
-      // Extract rack name from slot_id (e.g., "R01-C01-L01" -> "R01")
-      const rackName = slot.slot_id?.split("-")[0] || slot.rack_name || "Unknown";
-      if (!rackMap[rackName]) {
-        rackMap[rackName] = { total: 0, occupied: 0, updated_at: slot.updated_at || "" };
+      const rackNum = slot.rack;
+      if (rackNum === undefined || rackNum === null) return;
+
+      if (!rackMap[rackNum]) {
+        rackMap[rackNum] = { total: 0, occupied: 0, updated_at: slot.updated_at || "" };
       }
-      rackMap[rackName].total++;
+      rackMap[rackNum].total++;
       if (slot.tray_id) {
-        rackMap[rackName].occupied++;
+        rackMap[rackNum].occupied++;
       }
-      if (slot.updated_at && slot.updated_at > rackMap[rackName].updated_at) {
-        rackMap[rackName].updated_at = slot.updated_at;
+      if (slot.updated_at && slot.updated_at > rackMap[rackNum].updated_at) {
+        rackMap[rackNum].updated_at = slot.updated_at;
       }
     });
 
     return Object.entries(rackMap)
-      .map(([rackName, data]) => ({
-        rack_name: rackName,
+      .map(([rackNum, data]) => ({
+        rack: Number(rackNum),
         occupied_slots: data.occupied,
         free_slots: data.total - data.occupied,
         rack_occupancy_percent: data.total > 0 ? (data.occupied / data.total) * 100 : 0,
         updated_at: data.updated_at,
       }))
-      .sort((a, b) => a.rack_name.localeCompare(b.rack_name));
+      .sort((a, b) => a.rack - b.rack);
   };
 
   const fetchOccupiedPercent = useCallback(async () => {
     try {
-      const [slotsResponse, traysResponse] = await Promise.all([
-        fetch("https://amsstores1.leapmile.com/robotmanager/slots_count?slot_status=active", {
+      const [slotsResponse, occupiedResponse] = await Promise.all([
+        fetch("https://amsstores1.leapmile.com/robotmanager/slots?slot_status=active", {
           headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
         }),
-        fetch("https://amsstores1.leapmile.com/robotmanager/trays?tray_status=active", {
+        fetch("https://amsstores1.leapmile.com/nanostore/occupied_trays?occupied=true", {
           headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
         }),
       ]);
 
       const slotsData = await slotsResponse.json();
-      const traysData = await traysResponse.json();
+      const occupiedData = await occupiedResponse.json();
 
-      const totalSlots = slotsData.records?.[0]?.total_count || 0;
-      const occupiedSlots = traysData.records ? traysData.records.length : 0;
+      const totalSlots = slotsData.total_count || slotsData.count || 0;
+      const occupiedSlots = occupiedData.records?.[0]?.count || 0;
       const percent = totalSlots > 0 ? (occupiedSlots / totalSlots) * 100 : 0;
 
       setOccupiedPercent(percent);
@@ -375,36 +358,105 @@ const Reports = () => {
   const fetchReportData = useCallback(async () => {
     setLoading(true);
     try {
-      const endpoint = getEndpointForReport(reportType);
+      let records: any[] = [];
 
-      const response = await fetch(endpoint, {
-        headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
-      });
+      switch (reportType) {
+        case "product_stock": {
+          // Fetch items and trays, then join to get tray_weight
+          const [itemsRes, traysRes] = await Promise.all([
+            fetch("https://amsstores1.leapmile.com/nanostore/items", {
+              headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
+            }),
+            fetch("https://amsstores1.leapmile.com/robotmanager/trays", {
+              headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
+            }),
+          ]);
+          const itemsData = await itemsRes.json();
+          const traysData = await traysRes.json();
 
-      if (response.status === 404) {
-        setRowData([]);
-        setLoading(false);
-        return;
-      }
+          // Create tray lookup map
+          const trayMap: Record<string, any> = {};
+          (traysData.records || []).forEach((tray: any) => {
+            trayMap[tray.tray_id] = tray;
+          });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+          // Join items with tray data
+          records = (itemsData.records || []).map((item: any) => ({
+            ...item,
+            tray_weight: trayMap[item.tray_id]?.tray_weight || null,
+          }));
+          break;
+        }
 
-      const data = await response.json();
-      let records = data.records || [];
+        case "order_product_transaction": {
+          const res = await fetch("https://amsstores1.leapmile.com/nanostore/items/usage?order_by=DESC", {
+            headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
+          });
+          const data = await res.json();
+          records = data.records || [];
+          break;
+        }
 
-      // For rack transaction, aggregate slots by rack
-      if (reportType === "rack_transaction") {
-        records = aggregateSlotsByRack(records);
-      }
+        case "order_tray_transaction": {
+          const res = await fetch("https://amsstores1.leapmile.com/robotmanager/task", {
+            headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
+          });
+          const data = await res.json();
+          records = data.records || [];
+          break;
+        }
 
-      // For tray transaction, add computed fields
-      if (reportType === "tray_transaction") {
-        records = records.map((r: any) => ({
-          ...r,
-          has_item: r.tray_lockcount > 0 || r.number_of_items > 0,
-        }));
+        case "tray_transaction": {
+          // Fetch trays and items, then compute number_of_items and total_available_quantity
+          const [traysRes, itemsRes] = await Promise.all([
+            fetch("https://amsstores1.leapmile.com/robotmanager/trays", {
+              headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
+            }),
+            fetch("https://amsstores1.leapmile.com/nanostore/items", {
+              headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
+            }),
+          ]);
+          const traysData = await traysRes.json();
+          const itemsData = await itemsRes.json();
+
+          // Group items by tray_id
+          const trayItemsMap: Record<string, { count: number; totalQty: number }> = {};
+          (itemsData.records || []).forEach((item: any) => {
+            if (!item.tray_id) return;
+            if (!trayItemsMap[item.tray_id]) {
+              trayItemsMap[item.tray_id] = { count: 0, totalQty: 0 };
+            }
+            trayItemsMap[item.tray_id].count++;
+            trayItemsMap[item.tray_id].totalQty += item.item_quantity || 0;
+          });
+
+          // Join trays with computed fields
+          records = (traysData.records || []).map((tray: any) => ({
+            ...tray,
+            number_of_items: trayItemsMap[tray.tray_id]?.count || 0,
+            total_available_quantity: trayItemsMap[tray.tray_id]?.totalQty || 0,
+            has_item: (trayItemsMap[tray.tray_id]?.count || 0) > 0,
+          }));
+          break;
+        }
+
+        case "rack_transaction": {
+          const res = await fetch("https://amsstores1.leapmile.com/robotmanager/slots", {
+            headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
+          });
+          const data = await res.json();
+          records = aggregateSlotsByRack(data.records || []);
+          break;
+        }
+
+        case "order_failure_transaction": {
+          const res = await fetch("https://amsstores1.leapmile.com/robotmanager/task?task_status=failed", {
+            headers: { Authorization: AUTH_TOKEN, "Content-Type": "application/json" },
+          });
+          const data = await res.json();
+          records = data.records || [];
+          break;
+        }
       }
 
       console.log(`Fetched ${reportType}:`, records.length);
@@ -508,8 +560,8 @@ const Reports = () => {
             </Select>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="bg-blue-50 px-3 py-1.5 rounded text-sm">
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="bg-blue-50 px-3 py-1.5 rounded text-sm whitespace-nowrap">
               Occupied: <span className="font-semibold text-blue-600">{occupiedPercent.toFixed(1)}%</span>
             </div>
             <Button variant="outline" size="sm" onClick={handleRefresh} disabled={loading} className="bg-white">
@@ -531,7 +583,7 @@ const Reports = () => {
 
         {/* Data Grid */}
         {!loading && rowData.length === 0 ? (
-          <div className="flex justify-center items-center" style={{ height: "calc(100vh - 145px)" }}>
+          <div className="flex justify-center items-center" style={{ height: "calc(100vh - 180px)" }}>
             <img src={noRecordsImage} alt="No records found" className="w-48 sm:w-[340px]" />
           </div>
         ) : (
@@ -541,7 +593,7 @@ const Reports = () => {
               columnDefs={getColumnsForReport(reportType)}
               defaultColDef={{
                 resizable: true,
-                minWidth: 100,
+                minWidth: 80,
                 sortable: true,
                 filter: true,
               }}
