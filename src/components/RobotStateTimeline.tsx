@@ -11,20 +11,22 @@ const STATUS_COLORS = {
   active: "#10b981",
   idle: "#f59e0b",
   maintenance: "#3b82f6",
-  error: "#ef4444"
+  error: "#ef4444",
 };
 
 const STATUS_LABELS = ["error", "maintenance", "idle", "active"];
 
 export const RobotStateTimeline = () => {
-  const [data, setData] = useState<Array<{ time: number; status: number; statusName: string; timeLabel: string; isLatest: boolean }>>([]);
+  const [data, setData] = useState<
+    Array<{ time: number; status: number; statusName: string; timeLabel: string; isLatest: boolean }>
+  >([]);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   const CustomDot = (props: any) => {
     const { cx, cy, payload } = props;
     const isLatest = payload.isLatest;
     const color = STATUS_COLORS[payload.statusName as keyof typeof STATUS_COLORS];
-    
+
     return (
       <circle
         cx={cx}
@@ -44,10 +46,11 @@ export const RobotStateTimeline = () => {
         {
           method: "GET",
           headers: {
-            "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2wiOiJhZG1pbiIsImV4cCI6MTkwMDY1MzE0M30.asYhgMAOvrau4G6LI4V4IbgYZ022g_GX0qZxaS57GQc",
-            "Content-Type": "application/json"
-          }
-        }
+            Authorization:
+              "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2wiOiJhZG1pbiIsImV4cCI6MTkwMDY1MzE0M30.asYhgMAOvrau4G6LI4V4IbgYZ022g_GX0qZxaS57GQc",
+            "Content-Type": "application/json",
+          },
+        },
       );
 
       if (!response.ok) {
@@ -55,30 +58,32 @@ export const RobotStateTimeline = () => {
       }
 
       const result = await response.json();
-      
+
       if (result.records && result.records.length > 0) {
         console.log("Robot state records:", result.records);
-        
-        const chartData = result.records.map((record: RobotState, index: number) => {
-          const date = new Date(record.updated_at);
-          const hours = date.getHours();
-          const minutes = date.getMinutes();
-          const timeValue = hours + minutes / 60;
-          const timeLabel = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-          
-          const statusName = record.status.toLowerCase();
-          const statusIndex = STATUS_LABELS.indexOf(statusName);
-          
-          return {
-            time: timeValue,
-            status: statusIndex >= 0 ? statusIndex : 0,
-            statusName,
-            timeLabel,
-            isLatest: index === 0
-          };
-        }).filter((item: { time: number }) => item.time >= 8 && item.time <= 18)
+
+        const chartData = result.records
+          .map((record: RobotState, index: number) => {
+            const date = new Date(record.updated_at);
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            const timeValue = hours + minutes / 60;
+            const timeLabel = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+
+            const statusName = record.status.toLowerCase();
+            const statusIndex = STATUS_LABELS.indexOf(statusName);
+
+            return {
+              time: timeValue,
+              status: statusIndex >= 0 ? statusIndex : 0,
+              statusName,
+              timeLabel,
+              isLatest: index === 0,
+            };
+          })
+          .filter((item: { time: number }) => item.time >= 8 && item.time <= 18)
           .reverse(); // Reverse to show chronological order
-        
+
         console.log("Filtered chart data:", chartData);
         setData(chartData);
       }
@@ -104,44 +109,44 @@ export const RobotStateTimeline = () => {
 
   return (
     <div className="flex flex-col" style={{ flex: 1 }}>
-      <div style={{ height: '280px', width: '100%' }}>
+      <div style={{ height: "280px", width: "100%" }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 10, right: 30, bottom: 40, left: 80 }}>
+          <LineChart data={data} margin={{ top: 10, right: 30, bottom: 40, left: 50 }}>
             <XAxis
               type="number"
               dataKey="time"
               domain={[8, 18]}
               ticks={timeLabels}
               tickFormatter={(value) => `${value}:00`}
-              label={{ value: 'Time of Day', position: 'bottom', offset: 20, style: { fill: '#351c75', fontSize: 13 } }}
-              tick={{ fill: '#351c75', fontSize: 12 }}
+              label={{ value: "Time of Day", position: "bottom", offset: 20, style: { fill: "#351c75", fontSize: 13 } }}
+              tick={{ fill: "#351c75", fontSize: 12 }}
             />
             <YAxis
               type="number"
               domain={[0, 3]}
               ticks={[0, 1, 2, 3]}
               tickFormatter={(value) => STATUS_LABELS[value].charAt(0).toUpperCase() + STATUS_LABELS[value].slice(1)}
-              tick={{ fill: '#351c75', fontSize: 13 }}
+              tick={{ fill: "#351c75", fontSize: 13 }}
               width={70}
-              label={{ value: 'Status', angle: -90, position: 'insideLeft', style: { fill: '#351c75', fontSize: 13 } }}
+              label={{ value: "Status", angle: -90, position: "insideLeft", style: { fill: "#351c75", fontSize: 13 } }}
             />
             <Tooltip
               content={({ payload }) => {
                 if (payload && payload.length > 0) {
                   const data = payload[0].payload;
                   return (
-                    <div style={{ 
-                      backgroundColor: '#ffffff', 
-                      padding: '8px', 
-                      border: '1px solid #d1d5db',
-                      borderRadius: '4px'
-                    }}>
-                      <div style={{ color: '#351c75', fontSize: '12px', fontWeight: '500' }}>
+                    <div
+                      style={{
+                        backgroundColor: "#ffffff",
+                        padding: "8px",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      <div style={{ color: "#351c75", fontSize: "12px", fontWeight: "500" }}>
                         {data.statusName.charAt(0).toUpperCase() + data.statusName.slice(1)}
                       </div>
-                      <div style={{ color: '#6b7280', fontSize: '11px' }}>
-                        {data.timeLabel}
-                      </div>
+                      <div style={{ color: "#6b7280", fontSize: "11px" }}>{data.timeLabel}</div>
                     </div>
                   );
                 }
@@ -161,16 +166,18 @@ export const RobotStateTimeline = () => {
       </div>
 
       {/* Legend */}
-      <div className="flex justify-center mt-2" style={{ gap: '24px' }}>
+      <div className="flex justify-center mt-2" style={{ gap: "24px" }}>
         {Object.entries(STATUS_COLORS).map(([status, color]) => (
-          <div key={status} className="flex items-center" style={{ gap: '6px' }}>
-            <div style={{ 
-              width: '12px', 
-              height: '12px', 
-              backgroundColor: color,
-              borderRadius: '2px'
-            }} />
-            <span style={{ color: '#351c75', fontSize: '13px' }}>
+          <div key={status} className="flex items-center" style={{ gap: "6px" }}>
+            <div
+              style={{
+                width: "12px",
+                height: "12px",
+                backgroundColor: color,
+                borderRadius: "2px",
+              }}
+            />
+            <span style={{ color: "#351c75", fontSize: "13px" }}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </div>
