@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AppHeader from "@/components/AppHeader";
 import { RobotStateTimeline } from "@/components/RobotStateTimeline";
@@ -23,6 +23,10 @@ interface ActionHistoryItem {
   slot: number | null;
 }
 
+// Constants for shuttle animation
+const SLOT_HEIGHT = 25; // px
+const SLOT_GAP = 10; // px
+
 const Home = () => {
   useAuthSession();
   const [userName, setUserName] = useState("");
@@ -34,6 +38,47 @@ const Home = () => {
 
   // Use the PubSub hook for real-time shuttle tracking
   const { shuttleState } = useShuttlePubSub();
+
+  // Track previous rack position for animation
+  const prevRackRef = useRef<number | null>(null);
+  const [animatedRackPosition, setAnimatedRackPosition] = useState<number>(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Calculate Y position for a given rack index
+  const calculateYPosition = (rackIndex: number): number => {
+    return rackIndex * (SLOT_HEIGHT + SLOT_GAP);
+  };
+
+  // Animate shuttle when rack position changes
+  useEffect(() => {
+    const currentRack = shuttleState.store_rack;
+    
+    // Skip if no valid rack or if it's the same position
+    if (currentRack === null || currentRack === undefined || currentRack < 0) {
+      return;
+    }
+
+    // Initialize position on first valid rack
+    if (prevRackRef.current === null) {
+      prevRackRef.current = currentRack;
+      setAnimatedRackPosition(calculateYPosition(currentRack));
+      return;
+    }
+
+    // Only animate if position actually changed
+    if (prevRackRef.current !== currentRack) {
+      setIsAnimating(true);
+      setAnimatedRackPosition(calculateYPosition(currentRack));
+      prevRackRef.current = currentRack;
+
+      // Clear animating flag after animation completes
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 500); // Match animation duration
+
+      return () => clearTimeout(timer);
+    }
+  }, [shuttleState.store_rack, shuttleState.shuttle_action]);
 
   // Track action history
   useEffect(() => {
@@ -117,40 +162,22 @@ const Home = () => {
     }
   };
 
-  // Determine which shuttle image to show based on shuttle state
-  const getShuttleImageForRack = (rackIndex: number): string | null => {
-    const { store_row, store_rack, shuttle_action } = shuttleState;
-
-    // Don't show if shuttle is moving (backward/forward)
-    if (shuttle_action === "backward" || shuttle_action === "forward") {
-      return null;
-    }
-
-    // Check if this rack should show the shuttle
-    if (store_rack !== rackIndex) {
-      return null;
-    }
-
+  // Get shuttle image based on current row
+  const getShuttleImage = (): string => {
+    const { store_row } = shuttleState;
     // Row 0 shows es-right, Row 1 shows es-left
-    if (store_row === 0) {
-      return esRight;
-    }
-    if (store_row === 1) {
-      return esLeft;
-    }
-
-    return null;
+    return store_row === 0 ? esRight : esLeft;
   };
 
-  // Check if shuttle should be visible for a specific rack
-  const isShuttleVisibleForRack = (rackIndex: number): boolean => {
+  // Check if shuttle should be visible
+  const isShuttleVisible = (): boolean => {
     const { store_row, store_rack, shuttle_action } = shuttleState;
 
     if (shuttle_action === "backward" || shuttle_action === "forward") {
       return false;
     }
 
-    if (store_rack !== rackIndex) {
+    if (store_rack === null || store_rack === undefined || store_rack < 0) {
       return false;
     }
 
@@ -283,26 +310,26 @@ const Home = () => {
                   }}
                 />
 
-                
-                {Array.from({ length: robotNumRacks }, (_, rackIdx) => (
+                {/* Single animated shuttle */}
+                {isShuttleVisible() && (
                   <div
-                    key={`shuttle-slot-${rackIdx}`}
                     className="flex flex-col items-center justify-center"
                     style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: 0,
+                      transform: `translate(-50%, ${animatedRackPosition}px)`,
+                      transition: "transform 500ms cubic-bezier(0.4, 0, 0.2, 1)",
                       height: "25px",
-                      marginTop: rackIdx === 0 ? "0" : "10px",
-                      position: "relative",
                       zIndex: 1,
-                      opacity: isShuttleVisibleForRack(rackIdx) ? 1 : 0,
-                      transform: isShuttleVisibleForRack(rackIdx) ? "translateX(0)" : "translateX(-20px)",
-                      transition: "opacity 0.4s ease-in-out, transform 0.4s ease-in-out",
+                      willChange: "transform",
                     }}
                   >
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <img
-                            src={getShuttleImageForRack(rackIdx) || esRight}
+                            src={getShuttleImage()}
                             alt="shuttle"
                             className="cursor-pointer"
                             style={{
@@ -359,7 +386,7 @@ const Home = () => {
                       )}
                     </div>
                   </div>
-                ))}
+                )}
               </div>
 
               {/* Row 0 */}
