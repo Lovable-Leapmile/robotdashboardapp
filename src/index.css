@@ -157,20 +157,21 @@ All colors MUST be HSL.
 }
 
 .ag-theme-quartz .ag-cell {
-  padding: 8px !important;
+  padding: 0 8px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  line-height: normal !important;
+  line-height: 1.4 !important;
   font-size: 12px;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
+  height: 100% !important;
 }
 
 @media (min-width: 640px) {
   .ag-theme-quartz .ag-cell {
-    padding: 12px !important;
+    padding: 0 12px !important;
     font-size: 14px;
   }
 }
@@ -180,7 +181,8 @@ All colors MUST be HSL.
 }
 
 .ag-theme-quartz .ag-cell-wrapper {
-  height: 100%;
+  height: 100% !important;
+  width: 100% !important;
   display: flex !important;
   align-items: center !important;
   overflow: hidden !important;
@@ -190,6 +192,9 @@ All colors MUST be HSL.
 }
 
 .ag-theme-quartz .ag-cell-value {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
