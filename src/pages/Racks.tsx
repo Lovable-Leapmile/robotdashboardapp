@@ -231,7 +231,7 @@ const Racks = () => {
             {slot.tags?.includes("station") && (
               <div
                 className="relative flex items-center justify-center rounded-sm"
-                sstyle={{
+                style={{
                   background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
                   border: "2px solid #f59e0b",
                   boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
