@@ -12,7 +12,7 @@ import noRecordsImage from "@/assets/no_records.png";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RefreshCw, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { dateFilterParams, getDefaultGridProps } from "@/lib/agGridUtils";
+import { dateFilterParams, getDefaultGridProps, createDateColumnDef } from "@/lib/agGridUtils";
 
 // Register AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -64,22 +64,8 @@ const Reports = () => {
 
   // Product Stock Report columns (matching Python: Transaction Date, Receive Date, Item Id, Stock, Tray ID, Tray Weight (kg), Item Description)
   const productStockColumns: ColDef[] = [
-    {
-      field: "transaction_date",
-      headerName: "Transaction Date",
-      flex: 1,
-      minWidth: 150,
-      filter: "agDateColumnFilter",
-      filterParams: dateFilterParams,
-    },
-    {
-      field: "receive_date",
-      headerName: "Receive Date",
-      flex: 1,
-      minWidth: 120,
-      filter: "agDateColumnFilter",
-      filterParams: dateFilterParams,
-    },
+    createDateColumnDef("transaction_date", "Transaction Date", { flex: 1, minWidth: 150 }),
+    createDateColumnDef("receive_date", "Receive Date", { flex: 1, minWidth: 120 }),
     { field: "item_id", headerName: "Item Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "tray_divider", headerName: "Division", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "stock", headerName: "Stock", flex: 0.7, minWidth: 80, valueFormatter: (p) => p.value ?? 0 },
@@ -102,14 +88,7 @@ const Reports = () => {
 
   // Order Product Transaction columns (matching Python: Transaction Date, Activity Type, Order Id, User Id, User Name, User Phone, Tray ID, Item Id, Item Processed Qty)
   const orderProductColumns: ColDef[] = [
-    {
-      field: "transaction_date",
-      headerName: "Transaction Date",
-      flex: 1,
-      minWidth: 150,
-      filter: "agDateColumnFilter",
-      filterParams: dateFilterParams,
-    },
+    createDateColumnDef("transaction_date", "Transaction Date", { flex: 1, minWidth: 150 }),
     {
       field: "activity_type",
       headerName: "Activity Type",
@@ -141,14 +120,7 @@ const Reports = () => {
 
   // Order Tray Transaction columns (matching Python: Transaction Date, Order Id, Status, Tray ID, Station, Item Id, Item Order Qty, Order Ref Id)
   const orderTrayColumns: ColDef[] = [
-    {
-      field: "transaction_date",
-      headerName: "Transaction Date",
-      flex: 1,
-      minWidth: 150,
-      filter: "agDateColumnFilter",
-      filterParams: dateFilterParams,
-    },
+    createDateColumnDef("transaction_date", "Transaction Date", { flex: 1, minWidth: 150 }),
     { field: "order_id", headerName: "Order Id", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "status", headerName: "Status", flex: 0.8, minWidth: 100, valueFormatter: (p) => p.value ?? "N/A" },
     { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
@@ -172,14 +144,7 @@ const Reports = () => {
 
   // Tray Transaction columns (matching Python: Transaction Date, Tray ID, Tray Status, Division, Tray Weight (kg), Tray Height, Number of Items, Total Available Quantity, Has Item)
   const trayTransactionColumns: ColDef[] = [
-    {
-      field: "transaction_date",
-      headerName: "Transaction Date",
-      flex: 1,
-      minWidth: 150,
-      filter: "agDateColumnFilter",
-      filterParams: dateFilterParams,
-    },
+    createDateColumnDef("transaction_date", "Transaction Date", { flex: 1, minWidth: 150 }),
     { field: "tray_id", headerName: "Tray ID", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "tray_status",
@@ -228,14 +193,7 @@ const Reports = () => {
 
   // Rack Transaction columns (matching Python: Transaction Date, Rack, Occupied Slots, Free Slots, Rack Occupancy in %)
   const rackTransactionColumns: ColDef[] = [
-    {
-      field: "transaction_date",
-      headerName: "Transaction Date",
-      flex: 1,
-      minWidth: 150,
-      filter: "agDateColumnFilter",
-      filterParams: dateFilterParams,
-    },
+    createDateColumnDef("transaction_date", "Transaction Date", { flex: 1, minWidth: 150 }),
     { field: "rack", headerName: "Rack", flex: 1, minWidth: 120, valueFormatter: (p) => p.value ?? "N/A" },
     {
       field: "occupied_slots",
@@ -256,14 +214,7 @@ const Reports = () => {
 
   // Order Failure Transaction columns (matching Python: Transaction Date, Order Ref ID, Activity, Item ID, Movement Type, Order Type, Item Order Qty, Message)
   const orderFailureColumns: ColDef[] = [
-    {
-      field: "transaction_date",
-      headerName: "Transaction Date",
-      flex: 1,
-      minWidth: 150,
-      filter: "agDateColumnFilter",
-      filterParams: dateFilterParams,
-    },
+    createDateColumnDef("transaction_date", "Transaction Date", { flex: 1, minWidth: 150 }),
     {
       field: "order_ref_id",
       headerName: "Order Ref ID",
