@@ -229,7 +229,18 @@ const Racks = () => {
           <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-1" style={{ gap: "1px" }}>
             {slot.tray_id && <img src={trayImg} alt="Tray" className="w-[116px] h-[8px] sm:w-[146px] sm:h-[10px]" />}
             {slot.tags?.includes("station") && (
-              <img src={stationImg} alt="Station" className="w-[116px] h-[8px] sm:w-[146px] sm:h-[10px]" />
+              <div 
+                className="flex flex-col items-center justify-center rounded px-1 py-0.5"
+                style={{
+                  backgroundColor: "#fef3c7",
+                  border: "1.5px solid #d97706",
+                }}
+              >
+                <img src={stationImg} alt="Station" className="w-[110px] h-[8px] sm:w-[140px] sm:h-[10px]" />
+                <span className="text-[8px] sm:text-[9px] font-bold" style={{ color: "#92400e" }}>
+                  Picking Station
+                </span>
+              </div>
             )}
           </div>
         )}
