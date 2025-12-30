@@ -230,11 +230,10 @@ const Racks = () => {
             {slot.tray_id && <img src={trayImg} alt="Tray" className="w-[116px] h-[8px] sm:w-[146px] sm:h-[10px]" />}
             {slot.tags?.includes("station") && (
               <div 
-                className="relative flex items-center justify-center rounded-sm"
+                className="relative flex items-center justify-center rounded-sm animate-pulse-station"
                 style={{
                   background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
                   border: "2px solid #f59e0b",
-                  boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
                   padding: "2px 4px",
                 }}
               >

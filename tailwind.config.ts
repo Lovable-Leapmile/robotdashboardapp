@@ -116,6 +116,14 @@ export default {
             boxShadow: "0 0 16px rgba(34, 197, 94, 0.7)",
           },
         },
+        "pulse-station": {
+          "0%, 100%": {
+            boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
+          },
+          "50%": {
+            boxShadow: "0 4px 16px rgba(245, 158, 11, 0.6)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -124,6 +132,7 @@ export default {
         "fade-in": "fade-in 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
         "pulse-glow": "pulse-glow 1.5s ease-in-out infinite",
+        "pulse-station": "pulse-station 2s ease-in-out infinite",
       },
     },
   },
