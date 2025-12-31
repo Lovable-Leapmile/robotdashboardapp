@@ -236,7 +236,16 @@ const ApiConfigModal = ({ onConfigured, open, onOpenChange, prefillApiName }: Ap
             )}
             {/* Live URL preview hint */}
             <p className="text-xs text-muted-foreground mt-2">
-              Will connect to: <span className="font-medium">{apiName.trim() ? `https://${apiName.trim()}.leapmile.com` : "https://[apiname.domainname].leapmile.com"}</span>
+              Will connect to: <span className="font-medium">{(() => {
+                const trimmed = apiName.trim();
+                if (!trimmed) return "https://[apiname.domainname].leapmile.com";
+                const parts = trimmed.split('.');
+                const domainPart = parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
+                const knownDomains = ['leapmile'];
+                return knownDomains.includes(domainPart) 
+                  ? `https://${trimmed}.com` 
+                  : `https://${trimmed}.leapmile.com`;
+              })()}</span>
             </p>
           </div>
 
