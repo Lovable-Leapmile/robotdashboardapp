@@ -234,6 +234,10 @@ const ApiConfigModal = ({ onConfigured, open, onOpenChange, prefillApiName }: Ap
                 ✓ Valid format
               </p>
             )}
+            {/* Live URL preview hint */}
+            <p className="text-xs text-muted-foreground mt-2">
+              Will connect to: <span className="font-medium">{apiName.trim() ? `https://${apiName.trim()}.leapmile.com` : "https://[apiname.domainname].leapmile.com"}</span>
+            </p>
           </div>
 
           <div className={`flex ${isControlled ? 'gap-3' : ''}`}>

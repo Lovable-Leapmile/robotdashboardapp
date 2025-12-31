@@ -10,9 +10,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { getPubSubBase } from "@/lib/api";
 import { getStoredAuthToken } from "@/lib/auth";
+import { useRobot, buildPubSubTopic } from "@/hooks/useRobot";
 import noRecordsImage from "@/assets/no_records.png";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, AlertCircle } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +45,7 @@ const Logs = () => {
   const gridApiRef = useRef<any>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { robotName, isLoading: robotLoading, error: robotError } = useRobot();
 
   const getFormattedData = (data: LogData[]) => {
     return data.map((row) => {
@@ -272,16 +274,29 @@ const Logs = () => {
     }
 
     setUserName(storedUserName);
-    fetchLogsData();
   }, [navigate]);
 
+  // Fetch logs when robotName is available
+  useEffect(() => {
+    if (robotName && !robotLoading) {
+      fetchLogsData();
+    }
+  }, [robotName, robotLoading]);
+
   const fetchLogsData = async () => {
+    if (!robotName) {
+      console.log("Robot name not available yet");
+      return;
+    }
+
     try {
       setLoading(true);
       const token = getStoredAuthToken();
       if (!token) return;
+      
+      const topic = buildPubSubTopic(robotName);
       const response = await fetch(
-        `${getPubSubBase()}/subscribe?topic=amsstores1_AMSSTORES1-Nano`,
+        `${getPubSubBase()}/subscribe?topic=${topic}`,
         {
           method: "GET",
           headers: {
@@ -319,6 +334,21 @@ const Logs = () => {
       setLoading(false);
     }
   };
+
+  // Show error state if robot data failed to load
+  if (robotError && !robotLoading) {
+    return (
+      <div className="min-h-screen bg-muted">
+        <AppHeader selectedTab="" isLogsPage={true} />
+        <main className="p-4 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
+            <p className="text-muted-foreground">Failed to load robot data: {robotError}</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-muted">
