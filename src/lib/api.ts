@@ -13,13 +13,23 @@ export const getCameraManagerBase = (): string => `${getApiOrigin()}/cameramanag
 // Get the API origin with optional port for admin console
 export const getAdminConsoleUrl = (): string => {
   const origin = getApiOrigin();
-  return origin.replace('.leapmile.com', '.leapmile.com:5700');
+  // Handle both .leapmile.com and direct .com domains
+  if (origin.includes('.leapmile.com')) {
+    return origin.replace('.leapmile.com', '.leapmile.com:5700');
+  }
+  // For direct .com domains, append port before any path
+  return origin.replace(/\.com($|\/)/, '.com:5700$1');
 };
 
 // Get the web app URL with port 6500
 export const getWebAppUrl = (): string => {
   const origin = getApiOrigin();
-  return origin.replace('.leapmile.com', '.leapmile.com:6500');
+  // Handle both .leapmile.com and direct .com domains
+  if (origin.includes('.leapmile.com')) {
+    return origin.replace('.leapmile.com', '.leapmile.com:6500');
+  }
+  // For direct .com domains, append port before any path
+  return origin.replace(/\.com($|\/)/, '.com:6500$1');
 };
 
 // Legacy exports for backward compatibility - these are now deprecated
