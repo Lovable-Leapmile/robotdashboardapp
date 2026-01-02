@@ -1,6 +1,4 @@
 const API_CONFIG_KEY = "api_config";
-const API_NAME_KEY = "apiname";
-const ROBOT_NAME_KEY = "robotname";
 
 export interface ApiConfig {
   apiName: string;
@@ -23,19 +21,14 @@ export const getStoredApiConfig = (): ApiConfig | null => {
 
 export const storeApiConfig = (apiName: string): ApiConfig => {
   const trimmed = apiName.trim();
-  const baseUrl = `https://${trimmed}.com`;
+  const baseUrl = `https://${trimmed}.leapmile.com`;
   const config: ApiConfig = { apiName: trimmed, baseUrl };
   localStorage.setItem(API_CONFIG_KEY, JSON.stringify(config));
-  // Store apiname prefix (first part before dot) separately for pubsub topic
-  const apiNamePrefix = trimmed.split('.')[0];
-  localStorage.setItem(API_NAME_KEY, apiNamePrefix);
   return config;
 };
 
 export const clearApiConfig = (): void => {
   localStorage.removeItem(API_CONFIG_KEY);
-  localStorage.removeItem(API_NAME_KEY);
-  localStorage.removeItem(ROBOT_NAME_KEY);
 };
 
 export const isApiConfigured = (): boolean => {
@@ -48,28 +41,4 @@ export const getApiBaseUrl = (): string => {
     throw new Error("API_NOT_CONFIGURED");
   }
   return config.baseUrl;
-};
-
-// Get the stored apiname from localStorage
-export const getStoredApiName = (): string | null => {
-  return localStorage.getItem(API_NAME_KEY);
-};
-
-// Get the stored robotname from localStorage
-export const getStoredRobotName = (): string | null => {
-  return localStorage.getItem(ROBOT_NAME_KEY);
-};
-
-// Store the robot name in localStorage
-export const storeRobotName = (robotName: string): void => {
-  localStorage.setItem(ROBOT_NAME_KEY, robotName);
-};
-
-// Get the pubsub topic constructed from apiname and robotname
-// Format: apiname-robotname (e.g., amsstores1-AMSSTORES1-Nano)
-export const getPubSubTopic = (): string | null => {
-  const apiName = getStoredApiName(); // Already stored as prefix only
-  const robotName = getStoredRobotName();
-  if (!apiName || !robotName) return null;
-  return `${apiName}-${robotName}`;
 };
