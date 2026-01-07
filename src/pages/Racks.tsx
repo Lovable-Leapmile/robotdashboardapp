@@ -422,7 +422,7 @@ const Racks = () => {
 
             {/* Slot Details Panel - Separate Container */}
             {selectedSlotId && (
-              <div className="lg:w-[320px]">
+              <div className="lg:w-[320px] border-l border-border pl-4">
                 <SlotDetailsPanel slotDetails={slotDetails} isVisible={selectedSlotId !== null} />
               </div>
             )}
