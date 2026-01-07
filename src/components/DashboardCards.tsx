@@ -186,123 +186,198 @@ export const DashboardCards = () => {
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-1.5 mt-2">
-      {/* Robot Information */}
-      <div className="flex-1 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-2">
-        <div className="flex items-center gap-1.5 mb-1.5 border-b border-primary/15 pb-1">
-          <Bot className="w-3 h-3 text-primary" />
-          <span className="text-[10px] font-bold text-primary">Robot</span>
-        </div>
-        {robotInfo ? (
-          <div className="space-y-1">
-            <div className="flex items-center justify-between text-[10px]">
-              <span className="text-muted-foreground">Name</span>
-              <span className="font-semibold text-primary truncate ml-1 max-w-[80px]">{robotInfo.robot_name}</span>
-            </div>
-            <div className="grid grid-cols-4 gap-0.5">
-              {[
-                { label: "R", value: robotInfo.robot_num_rows },
-                { label: "K", value: robotInfo.robot_num_racks },
-                { label: "S", value: robotInfo.robot_num_slots },
-                { label: "D", value: robotInfo.robot_num_depths },
-              ].map((item) => (
-                <div key={item.label} className="text-center py-0.5 bg-background/60 rounded">
-                  <div className="text-[8px] text-muted-foreground">{item.label}</div>
-                  <div className="text-xs font-bold text-foreground">{item.value}</div>
+    <div className="grid grid-cols-2 grid-rows-2 gap-3 mt-[15px]">
+      {/* Robot Information Card */}
+      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 h-[250px] flex flex-col">
+        <CardHeader className="pb-2 pt-3 px-4 border-b border-primary/20">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-bold text-primary flex items-center gap-2">
+              <Bot className="w-4 h-4" />
+              Robot Information
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-3 px-4 pb-3 flex-1 flex flex-col justify-between overflow-hidden">
+          {robotInfo ? (
+            <div className="space-y-2">
+              <div className="bg-background/50 rounded-lg p-2 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] font-medium text-muted-foreground">Name</span>
+                  <span className="text-xs font-bold text-primary truncate ml-2">{robotInfo.robot_name}</span>
                 </div>
-              ))}
+                <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-border/50">
+                  <div className="text-center p-1.5 bg-background/80 rounded">
+                    <div className="text-xs text-muted-foreground">Rows</div>
+                    <div className="text-base font-bold text-foreground">{robotInfo.robot_num_rows}</div>
+                  </div>
+                  <div className="text-center p-1.5 bg-background/80 rounded">
+                    <div className="text-xs text-muted-foreground">Racks</div>
+                    <div className="text-base font-bold text-foreground">{robotInfo.robot_num_racks}</div>
+                  </div>
+                  <div className="text-center p-1.5 bg-background/80 rounded">
+                    <div className="text-xs text-muted-foreground">Slots</div>
+                    <div className="text-base font-bold text-foreground">{robotInfo.robot_num_slots}</div>
+                  </div>
+                  <div className="text-center p-1.5 bg-background/80 rounded">
+                    <div className="text-xs text-muted-foreground">Depth</div>
+                    <div className="text-base font-bold text-foreground">{robotInfo.robot_num_depths}</div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-[11px] text-muted-foreground text-center bg-background/30 rounded py-0.5 px-2">
+                Updated: {formatToIST(robotInfo.updated_at)}
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-muted-foreground text-center text-[10px]">Loading...</div>
-        )}
-      </div>
+          ) : (
+            <div className="text-muted-foreground text-center py-2 text-sm">Loading...</div>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Slot Information */}
-      <div className="flex-1 bg-gradient-to-r from-blue-500/5 to-blue-500/10 border border-blue-500/20 rounded-lg p-2">
-        <div className="flex items-center gap-1.5 mb-1.5 border-b border-blue-500/15 pb-1">
-          <Package className="w-3 h-3 text-blue-600" />
-          <span className="text-[10px] font-bold text-blue-600">Slots</span>
-        </div>
-        {slotInfo ? (
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <span className="text-sm font-bold text-foreground">{slotInfo.totalSlots}</span>
-                <span className="text-[8px] text-muted-foreground">total</span>
-              </div>
-              <div className="flex gap-1.5 text-[9px]">
-                <span className="text-blue-600 font-semibold">{slotInfo.occupiedSlots} occ</span>
-                <span className="text-green-600 font-semibold">{slotInfo.freeSlots} free</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Progress value={slotInfo.occupiedPercent} className="h-1 flex-1" />
-              <span className="text-[9px] font-semibold text-foreground w-8">{slotInfo.occupiedPercent.toFixed(0)}%</span>
-            </div>
+      {/* Slot Information Card */}
+      <Card className="bg-gradient-to-br from-blue-500/5 to-blue-500/10 border-blue-500/20 h-[250px] flex flex-col">
+        <CardHeader className="pb-2 pt-3 px-4 border-b border-blue-500/20">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-bold text-blue-600 flex items-center gap-2">
+              <Package className="w-4 h-4" />
+              Slot Information
+            </CardTitle>
           </div>
-        ) : (
-          <div className="text-muted-foreground text-center text-[10px]">Loading...</div>
-        )}
-      </div>
+        </CardHeader>
+        <CardContent className="pt-3 px-4 pb-3 flex-1 flex flex-col justify-between overflow-hidden">
+          {slotInfo ? (
+            <div className="space-y-2">
+              <div className="flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-foreground">{slotInfo.totalSlots}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Total Slots</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-blue-500/10 rounded-lg p-2 text-center border border-blue-500/20">
+                  <div className="text-xl font-bold text-blue-600">{slotInfo.occupiedSlots}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Occupied</div>
+                </div>
+                <div className="bg-green-500/10 rounded-lg p-2 text-center border border-green-500/20">
+                  <div className="text-xl font-bold text-green-600">{slotInfo.freeSlots}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Free</div>
+                </div>
+              </div>
+              <div className="bg-background/50 rounded-lg p-2 space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-medium text-muted-foreground">Occupancy Rate</span>
+                  <span className="text-xs font-bold text-foreground">{slotInfo.occupiedPercent.toFixed(1)}%</span>
+                </div>
+                <Progress value={slotInfo.occupiedPercent} className="h-1.5" />
+              </div>
+            </div>
+          ) : (
+            <div className="text-muted-foreground text-center py-2 text-sm">Loading...</div>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Tray Information */}
-      <div className="flex-1 bg-gradient-to-r from-purple-500/5 to-purple-500/10 border border-purple-500/20 rounded-lg p-2">
-        <div className="flex items-center gap-1.5 mb-1.5 border-b border-purple-500/15 pb-1">
-          <Layers className="w-3 h-3 text-purple-600" />
-          <span className="text-[10px] font-bold text-purple-600">Trays</span>
-        </div>
-        {trayInfo ? (
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <span className="text-sm font-bold text-foreground">{trayInfo.totalTrays}</span>
-                <span className="text-[8px] text-muted-foreground">total</span>
-              </div>
-              <div className="flex gap-1.5 text-[9px]">
-                <span className="text-purple-600 font-semibold">{trayInfo.occupiedTrays} occ</span>
-                <span className="text-green-600 font-semibold">{trayInfo.freeTrays} free</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Progress value={trayInfo.occupiedPercent} className="h-1 flex-1" />
-              <span className="text-[9px] font-semibold text-foreground w-8">{trayInfo.occupiedPercent.toFixed(0)}%</span>
-            </div>
+      {/* Tray Information Card */}
+      <Card className="bg-gradient-to-br from-purple-500/5 to-purple-500/10 border-purple-500/20 h-[250px] flex flex-col">
+        <CardHeader className="pb-2 pt-3 px-4 border-b border-purple-500/20">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-bold text-purple-600 flex items-center gap-2">
+              <Layers className="w-4 h-4" />
+              Tray Information
+            </CardTitle>
           </div>
-        ) : (
-          <div className="text-muted-foreground text-center text-[10px]">Loading...</div>
-        )}
-      </div>
+        </CardHeader>
+        <CardContent className="pt-3 px-4 pb-3 flex-1 flex flex-col justify-between overflow-hidden">
+          {trayInfo ? (
+            <div className="space-y-2">
+              <div className="flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-foreground">{trayInfo.totalTrays}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Total Trays</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-purple-500/10 rounded-lg p-2 text-center border border-purple-500/20">
+                  <div className="text-xl font-bold text-purple-600">{trayInfo.occupiedTrays}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Occupied</div>
+                </div>
+                <div className="bg-green-500/10 rounded-lg p-2 text-center border border-green-500/20">
+                  <div className="text-xl font-bold text-green-600">{trayInfo.freeTrays}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Free</div>
+                </div>
+              </div>
+              <div className="bg-background/50 rounded-lg p-2 space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-medium text-muted-foreground">Occupancy Rate</span>
+                  <span className="text-xs font-bold text-foreground">{trayInfo.occupiedPercent.toFixed(1)}%</span>
+                </div>
+                <Progress value={trayInfo.occupiedPercent} className="h-1.5" />
+              </div>
+            </div>
+          ) : (
+            <div className="text-muted-foreground text-center py-2 text-sm">Loading...</div>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Power Information */}
-      <div className="flex-1 bg-gradient-to-r from-amber-500/5 to-amber-500/10 border border-amber-500/20 rounded-lg p-2">
-        <div className="flex items-center gap-1.5 mb-1.5 border-b border-amber-500/15 pb-1">
-          <Zap className="w-3 h-3 text-amber-600" />
-          <span className="text-[10px] font-bold text-amber-600">Power</span>
-        </div>
-        {powerInfo ? (
-          <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[9px]">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground flex items-center gap-0.5"><Zap className="w-2 h-2" />V</span>
-              <span className="font-semibold text-foreground">{powerInfo.voltage}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground flex items-center gap-0.5"><Activity className="w-2 h-2" />A</span>
-              <span className="font-semibold text-foreground">{powerInfo.current}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground flex items-center gap-0.5"><Flame className="w-2 h-2" />P</span>
-              <span className="font-semibold text-amber-600">{powerInfo.power}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground flex items-center gap-0.5"><Battery className="w-2 h-2" />E</span>
-              <span className="font-semibold text-green-600">{powerInfo.energy}</span>
-            </div>
+      {/* Robot Power Card */}
+      <Card className="bg-gradient-to-br from-amber-500/5 to-amber-500/10 border-amber-500/20 h-[250px] flex flex-col">
+        <CardHeader className="pb-2 pt-3 px-4 border-b border-amber-500/20">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-bold text-amber-600 flex items-center gap-2">
+              <Zap className="w-4 h-4" />
+              Power Information
+            </CardTitle>
           </div>
-        ) : (
-          <div className="text-muted-foreground text-center text-[10px]">Loading...</div>
-        )}
-      </div>
+        </CardHeader>
+        <CardContent className="pt-3 px-4 pb-3 flex-1 flex flex-col justify-between overflow-hidden">
+          {powerInfo ? (
+            <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-background/50 rounded-lg p-2 text-center">
+                  <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-0.5">
+                    <Zap className="w-3 h-3" />
+                    Voltage
+                  </div>
+                  <div className="text-lg font-bold text-foreground">{powerInfo.voltage}</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-2 text-center">
+                  <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-0.5">
+                    <Activity className="w-3 h-3" />
+                    Current
+                  </div>
+                  <div className="text-lg font-bold text-foreground">{powerInfo.current}</div>
+                </div>
+              </div>
+              <div className="bg-amber-500/10 rounded-lg p-2 border border-amber-500/20">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                    <Flame className="w-3 h-3" />
+                    Power
+                  </span>
+                  <span className="text-lg font-bold text-amber-600">{powerInfo.power}</span>
+                </div>
+              </div>
+              <div className="bg-green-500/10 rounded-lg p-2 border border-green-500/20">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                    <Battery className="w-3 h-3" />
+                    Total Energy
+                  </span>
+                  <span className="text-lg font-bold text-green-600">{powerInfo.energy}</span>
+                </div>
+              </div>
+              {powerInfo.updatedAt && (
+                <div className="text-[10px] text-muted-foreground text-right mt-1">
+                  Updated: {new Date(powerInfo.updatedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-muted-foreground text-center py-2 text-sm">Loading...</div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
