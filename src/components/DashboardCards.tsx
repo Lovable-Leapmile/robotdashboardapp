@@ -19,6 +19,7 @@ interface SlotInfo {
   occupiedSlots: number;
   freeSlots: number;
   occupiedPercent: number;
+  updatedAt: Date;
 }
 
 interface TrayInfo {
@@ -26,6 +27,7 @@ interface TrayInfo {
   occupiedTrays: number;
   freeTrays: number;
   occupiedPercent: number;
+  updatedAt: Date;
 }
 
 interface PowerInfo {
@@ -57,15 +59,19 @@ export const DashboardCards = () => {
 
   const [timeAgoDisplay, setTimeAgoDisplay] = useState("Never");
 
-  const formatToIST = (dateString: string): string => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+  const formatDateTime = (date: Date | string | null): string => {
+    if (!date) return "";
+    const d = typeof date === "string" ? new Date(date) : date;
+    const day = String(d.getDate()).padStart(2, '0');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[d.getMonth()];
+    const year = d.getFullYear();
+    let hours = d.getHours();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day} ${month} ${year}, ${hours}:${minutes} ${ampm}`;
   };
 
   const fetchRobotInfo = async () => {
@@ -105,7 +111,7 @@ export const DashboardCards = () => {
       const freeSlots = totalSlots - occupiedSlots;
       const occupiedPercent = totalSlots > 0 ? (occupiedSlots / totalSlots) * 100 : 0;
 
-      setSlotInfo({ totalSlots, occupiedSlots, freeSlots, occupiedPercent });
+      setSlotInfo({ totalSlots, occupiedSlots, freeSlots, occupiedPercent, updatedAt: new Date() });
     } catch (error) {
       console.error("Error fetching slot info:", error);
     }
@@ -132,7 +138,7 @@ export const DashboardCards = () => {
       const totalTrays = occupiedTrays + freeTrays;
       const occupiedPercent = totalTrays > 0 ? (occupiedTrays / totalTrays) * 100 : 0;
 
-      setTrayInfo({ totalTrays, occupiedTrays, freeTrays, occupiedPercent });
+      setTrayInfo({ totalTrays, occupiedTrays, freeTrays, occupiedPercent, updatedAt: new Date() });
     } catch (error) {
       console.error("Error fetching tray info:", error);
     }
@@ -273,9 +279,16 @@ export const DashboardCards = () => {
       {/* Power Information Card */}
       <Card className="bg-gradient-to-br from-amber-500/5 to-amber-500/10 border-amber-500/20 flex flex-col overflow-hidden">
         <CardHeader className="pb-0 pt-2 px-3">
-          <CardTitle className="text-xs font-bold text-amber-600 flex items-center gap-1.5">
-            <Zap className="w-3.5 h-3.5" />
-            Power Information
+          <CardTitle className="text-xs font-bold text-amber-600 flex items-center justify-between w-full">
+            <span className="flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5" />
+              Power Information
+            </span>
+            {powerInfo?.updatedAt && (
+              <span className="text-[9px] font-normal text-muted-foreground">
+                {formatDateTime(powerInfo.updatedAt)}
+              </span>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-2 px-3 pb-3 flex-1 flex flex-col justify-center">
@@ -313,9 +326,16 @@ export const DashboardCards = () => {
       {/* Slot Information Card */}
       <Card className="bg-gradient-to-br from-blue-500/5 to-blue-500/10 border-blue-500/20 flex flex-col overflow-hidden">
         <CardHeader className="pb-0 pt-2 px-3">
-          <CardTitle className="text-xs font-bold text-blue-600 flex items-center gap-1.5">
-            <Package className="w-3.5 h-3.5" />
-            Slot Information
+          <CardTitle className="text-xs font-bold text-blue-600 flex items-center justify-between w-full">
+            <span className="flex items-center gap-1.5">
+              <Package className="w-3.5 h-3.5" />
+              Slot Information
+            </span>
+            {slotInfo?.updatedAt && (
+              <span className="text-[9px] font-normal text-muted-foreground">
+                {formatDateTime(slotInfo.updatedAt)}
+              </span>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-2 px-3 pb-3 flex-1 flex flex-col justify-center">
@@ -350,9 +370,16 @@ export const DashboardCards = () => {
       {/* Tray Information Card */}
       <Card className="bg-gradient-to-br from-purple-500/5 to-purple-500/10 border-purple-500/20 flex flex-col overflow-hidden">
         <CardHeader className="pb-0 pt-2 px-3">
-          <CardTitle className="text-xs font-bold text-purple-600 flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5" />
-            Tray Information
+          <CardTitle className="text-xs font-bold text-purple-600 flex items-center justify-between w-full">
+            <span className="flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5" />
+              Tray Information
+            </span>
+            {trayInfo?.updatedAt && (
+              <span className="text-[9px] font-normal text-muted-foreground">
+                {formatDateTime(trayInfo.updatedAt)}
+              </span>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-2 px-3 pb-3 flex-1 flex flex-col justify-center">
