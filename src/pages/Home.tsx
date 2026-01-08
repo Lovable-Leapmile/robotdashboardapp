@@ -295,11 +295,11 @@ const Home = () => {
 
       <main className="flex-1 px-2 sm:px-4 py-2 overflow-hidden">
         {/* Content row */}
-        <div className="flex flex-col lg:flex-row gap-3 lg:gap-4 h-full">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4 h-full">
           {/* Rack visualization with shuttle between rows - scrollable container with hidden scrollbar */}
           <div 
             ref={rackContainerRef}
-            className="flex-shrink-0 overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide rounded-lg"
+            className="flex-shrink-0 overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide rounded-lg mx-auto lg:mx-0"
             style={{ 
               maxHeight: 'calc(100vh - 75px)',
               scrollbarWidth: 'none',
