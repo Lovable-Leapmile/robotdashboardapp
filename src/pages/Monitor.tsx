@@ -26,16 +26,38 @@ interface StatusMessage {
   [key: string]: string | undefined;
 }
 
+// Ordered fields for display
+const FIELD_ORDER = [
+  { key: "ROBOT_ID", label: "Robot ID" },
+  { key: "SUPERVISOR STATUS", label: "Supervisor Status" },
+  { key: "msg", label: "Message" },
+  { key: "PLC ERRORS", label: "PLC Errors" },
+  { key: "PLC READS", label: "PLC Reads" },
+  { key: "PLC WRITES", label: "PLC Writes" },
+  { key: "NUM HOMINGS", label: "Num Homings" },
+  { key: "SUPERVISOR START TIME", label: "Supervisor Start Time" },
+  { key: "UPTIME", label: "Uptime" },
+  { key: "RECOVERIES MAGNET", label: "Recoveries Magnet" },
+  { key: "RECOVERIES PUSHPULL", label: "Recoveries Push/Pull" },
+  { key: "RECOVERIES HORZVERT", label: "Recoveries Horz/Vert" },
+  { key: "GOTO OPS", label: "Goto Ops" },
+  { key: "RETRIEVE OPS", label: "Retrieve Ops" },
+  { key: "STORE OPS", label: "Store Ops" },
+  { key: "device_id", label: "Device ID" },
+  { key: "UPDATED_AT", label: "Updated At" },
+];
+
 interface StatusCardProps {
   label: string;
   value: string | undefined;
+  isHighlight?: boolean;
 }
 
 const formatValue = (key: string, value: string | undefined): string => {
   if (!value) return "N/A";
 
   // Format datetime fields
-  if (key === "SUPERVISOR START TIME") {
+  if (key === "SUPERVISOR START TIME" || key === "UPDATED_AT") {
     try {
       const date = new Date(value.replace(" ", "T"));
       return format(date, "dd MMM yyyy, hh:mm:ss a");
@@ -47,13 +69,15 @@ const formatValue = (key: string, value: string | undefined): string => {
   return value;
 };
 
-const StatusCard = memo(({ label, value }: StatusCardProps) => {
+const StatusCard = memo(({ label, value, isHighlight }: StatusCardProps) => {
   const formattedValue = formatValue(label, value);
 
   return (
-    <div className="bg-card border border-border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1 truncate">{label.replace(/_/g, " ")}</p>
-      <p className="text-lg font-semibold text-foreground truncate" title={formattedValue}>
+    <div className={`bg-card border border-border rounded-xl p-4 sm:p-5 transition-all duration-200 hover:border-primary/30 hover:shadow-md ${isHighlight ? 'border-l-4 border-l-primary' : ''}`}>
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+        {label}
+      </p>
+      <p className="text-base sm:text-lg font-semibold text-foreground break-words" title={formattedValue}>
         {formattedValue}
       </p>
     </div>
@@ -63,11 +87,11 @@ const StatusCard = memo(({ label, value }: StatusCardProps) => {
 StatusCard.displayName = "StatusCard";
 
 const LoadingSkeleton = () => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-    {Array.from({ length: 16 }).map((_, i) => (
-      <div key={i} className="bg-card border border-border rounded-lg p-4">
-        <Skeleton className="h-3 w-20 mb-2" />
-        <Skeleton className="h-6 w-24" />
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 sm:p-6">
+    {Array.from({ length: 17 }).map((_, i) => (
+      <div key={i} className="bg-card border border-border rounded-xl p-4 sm:p-5">
+        <Skeleton className="h-3 w-24 mb-3" />
+        <Skeleton className="h-6 w-32" />
       </div>
     ))}
   </div>
@@ -146,12 +170,15 @@ const Monitor = () => {
   const renderStatusCards = () => {
     if (!statusData) return null;
 
-    const entries = Object.entries(statusData).filter(([key]) => key !== "msg");
-
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-        {entries.map(([key, value]) => (
-          <StatusCard key={key} label={key} value={value} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 sm:p-6">
+        {FIELD_ORDER.map(({ key, label }, index) => (
+          <StatusCard 
+            key={key} 
+            label={label} 
+            value={statusData[key]} 
+            isHighlight={index < 2}
+          />
         ))}
       </div>
     );
@@ -161,11 +188,17 @@ const Monitor = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <AppHeader selectedTab="" isMonitorPage={true} />
       <main className="flex-1 overflow-auto">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+          {/* Page Header */}
+          <div className="py-4 sm:py-6">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">System Monitor</h1>
+            <p className="text-sm text-muted-foreground mt-1">Real-time robot status updates</p>
+          </div>
+
           {/* Error state */}
           {error && (
-            <div className="m-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-              <p className="text-sm text-destructive">{error}</p>
+            <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-xl">
+              <p className="text-sm text-destructive font-medium">{error}</p>
             </div>
           )}
 
@@ -177,8 +210,9 @@ const Monitor = () => {
 
           {/* Empty state */}
           {!isLoading && !error && !statusData && (
-            <div className="flex items-center justify-center h-64">
-              <p className="text-muted-foreground">No status data available</p>
+            <div className="flex flex-col items-center justify-center h-64 text-center">
+              <p className="text-muted-foreground text-lg">No status data available</p>
+              <p className="text-muted-foreground text-sm mt-1">Waiting for robot data...</p>
             </div>
           )}
         </div>
