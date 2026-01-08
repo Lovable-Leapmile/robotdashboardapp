@@ -293,15 +293,14 @@ const Home = () => {
     <div className="flex flex-col lg:h-screen lg:max-h-screen lg:overflow-hidden" style={{ backgroundColor: "#fafafa" }}>
       <AppHeader selectedTab="Robot" />
 
-      <main className="flex-1 px-2 sm:px-4 py-2 overflow-hidden">
+      <main className="flex-1 px-2 sm:px-4 py-2 lg:overflow-hidden">
         {/* Content row */}
-        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4 h-full">
-          {/* Rack visualization with shuttle between rows - scrollable container with hidden scrollbar */}
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4 lg:h-full">
+          {/* Rack visualization with shuttle between rows - scrollable only on large screens */}
           <div 
             ref={rackContainerRef}
-            className="flex-shrink-0 overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide rounded-lg mx-auto lg:mx-0"
+            className="flex-shrink-0 lg:overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide rounded-lg mx-auto lg:mx-0 lg:max-h-[calc(100vh-100px)]"
             style={{ 
-              maxHeight: 'calc(100vh - 75px)',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
             }}
@@ -474,7 +473,7 @@ const Home = () => {
           </div>
 
           {/* Robot State Timeline with Dashboard Cards */}
-          <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+          <div className="flex flex-col flex-1 lg:min-h-0 lg:overflow-hidden">
             {/* Timeline and Recent Actions in same row */}
             <div className="flex flex-col lg:flex-row gap-2 flex-shrink-0">
               <div className="flex-1">
@@ -514,7 +513,7 @@ const Home = () => {
               </div>
             </div>
             {/* Dashboard Cards - fill remaining space */}
-            <div className="flex-1 min-h-0 overflow-auto mt-2">
+            <div className="flex-1 lg:min-h-0 lg:overflow-auto mt-2">
               <DashboardCards />
             </div>
           </div>
