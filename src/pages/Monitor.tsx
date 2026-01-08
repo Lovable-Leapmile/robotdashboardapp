@@ -134,12 +134,17 @@ const Monitor = () => {
       const data = await response.json();
 
       if (data?.records?.[0]?.message) {
-        const newDataString = JSON.stringify(data.records[0].message);
+        const record = data.records[0];
+        const messageWithUpdatedAt = {
+          ...record.message,
+          UPDATED_AT: record.updated_at,
+        };
+        const newDataString = JSON.stringify(messageWithUpdatedAt);
 
         // Only update state if data actually changed
         if (newDataString !== previousDataRef.current) {
           previousDataRef.current = newDataString;
-          setStatusData(data.records[0].message);
+          setStatusData(messageWithUpdatedAt);
         }
       }
 
