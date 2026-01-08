@@ -7,6 +7,8 @@ import { useAuthSession } from "@/hooks/useAuthSession";
 import { useShuttlePubSub } from "@/hooks/useShuttlePubSub";
 import { getStoredAuthToken } from "@/lib/auth";
 import { getRobotManagerBase } from "@/lib/api";
+import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -46,6 +48,7 @@ const Home = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const shuttleRef = useRef<HTMLDivElement>(null);
   const rackContainerRef = useRef<HTMLDivElement>(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   // Calculate Y position for a given rack index
   const calculateYPosition = (rackIndex: number): number => {
@@ -289,6 +292,11 @@ const Home = () => {
     return robotNumRacks * 25 + (robotNumRacks - 1) * 10;
   };
 
+  // Zoom controls
+  const handleZoomIn = () => setZoomLevel((prev) => Math.min(prev + 0.2, 2));
+  const handleZoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.2, 0.6));
+  const handleZoomReset = () => setZoomLevel(1);
+
   return (
     <div className="flex flex-col lg:h-screen lg:max-h-screen lg:overflow-hidden" style={{ backgroundColor: "#fafafa" }}>
       <AppHeader selectedTab="Robot" />
@@ -296,18 +304,57 @@ const Home = () => {
       <main className="flex-1 px-2 sm:px-4 py-2 lg:overflow-hidden">
         {/* Content row */}
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4 lg:h-full">
-          {/* Rack visualization with shuttle between rows - scrollable only on large screens */}
-          <div 
-            ref={rackContainerRef}
-            className="flex-shrink-0 lg:overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide rounded-lg mx-auto lg:mx-0 lg:max-h-[calc(100vh-100px)]"
-            style={{ 
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-            }}
-          >
-            {/* Combined Row 1, Shuttle Movement, and Row 0 with borders */}
-            <div className="inline-flex bg-white rounded-lg border border-gray-200 shadow-sm">
-              {/* Row 1 Section */}
+          {/* Rack visualization with zoom controls */}
+          <div className="flex flex-col flex-shrink-0">
+            {/* Zoom controls */}
+            <div className="flex items-center justify-center gap-1 mb-2">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7"
+                onClick={handleZoomOut}
+                disabled={zoomLevel <= 0.6}
+              >
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+              <span className="text-xs font-medium text-muted-foreground w-12 text-center">
+                {Math.round(zoomLevel * 100)}%
+              </span>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7"
+                onClick={handleZoomIn}
+                disabled={zoomLevel >= 2}
+              >
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7"
+                onClick={handleZoomReset}
+                disabled={zoomLevel === 1}
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+
+            {/* Scrollable rack container */}
+            <div 
+              ref={rackContainerRef}
+              className="lg:overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide rounded-lg mx-auto lg:mx-0 lg:max-h-[calc(100vh-140px)]"
+              style={{ 
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              }}
+            >
+              {/* Combined Row 1, Shuttle Movement, and Row 0 with borders */}
+              <div 
+                className="inline-flex bg-white rounded-lg border border-gray-200 shadow-sm origin-top-left transition-transform duration-200"
+                style={{ transform: `scale(${zoomLevel})` }}
+              >
+                {/* Row 1 Section */}
               <div className="flex flex-col items-center p-3 border-r border-gray-200">
                 <div className="text-xs font-semibold text-center mb-2" style={{ color: "#351c75" }}>
                   Row 1
@@ -468,6 +515,7 @@ const Home = () => {
                     </div>
                   ))}
                 </div>
+              </div>
               </div>
             </div>
           </div>
