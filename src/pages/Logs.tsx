@@ -8,8 +8,9 @@ import { ColDef, ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthSession } from "@/hooks/useAuthSession";
-import { getPubSubBase } from "@/lib/api";
+import { getApiOrigin } from "@/lib/api";
 import { getStoredAuthToken } from "@/lib/auth";
+import { getStoredApiConfig } from "@/lib/apiConfig";
 import noRecordsImage from "@/assets/no_records.png";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -280,8 +281,18 @@ const Logs = () => {
       setLoading(true);
       const token = getStoredAuthToken();
       if (!token) return;
+      
+      const config = getStoredApiConfig();
+      if (!config) {
+        throw new Error("API_NOT_CONFIGURED");
+      }
+      
+      const apiName = config.apiName;
+      const robotName = localStorage.getItem("robot_name") || apiName;
+      const topic = `${apiName}_${robotName}`;
+      
       const response = await fetch(
-        `${getPubSubBase()}/subscribe?topic=amsstores1_AMSSTORES1-Nano`,
+        `${getApiOrigin()}/pubsub/subscribe?topic=${topic}`,
         {
           method: "GET",
           headers: {
