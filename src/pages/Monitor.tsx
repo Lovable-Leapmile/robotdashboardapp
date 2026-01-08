@@ -48,6 +48,7 @@ const FIELD_ORDER = [
 ];
 
 interface StatusCardProps {
+  fieldKey: string;
   label: string;
   value: string | undefined;
   isHighlight?: boolean;
@@ -69,8 +70,8 @@ const formatValue = (key: string, value: string | undefined): string => {
   return value;
 };
 
-const StatusCard = memo(({ label, value, isHighlight }: StatusCardProps) => {
-  const formattedValue = formatValue(label, value);
+const StatusCard = memo(({ fieldKey, label, value, isHighlight }: StatusCardProps) => {
+  const formattedValue = formatValue(fieldKey, value);
 
   return (
     <div className={`bg-card border border-border rounded-xl p-4 sm:p-5 transition-all duration-200 hover:border-primary/30 hover:shadow-md ${isHighlight ? 'border-l-4 border-l-primary' : ''}`}>
@@ -179,7 +180,8 @@ const Monitor = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 sm:p-6">
         {FIELD_ORDER.map(({ key, label }, index) => (
           <StatusCard 
-            key={key} 
+            key={key}
+            fieldKey={key}
             label={label} 
             value={statusData[key]} 
             isHighlight={index < 2}
