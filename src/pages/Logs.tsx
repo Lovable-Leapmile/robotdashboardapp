@@ -280,16 +280,27 @@ const Logs = () => {
       setLoading(true);
       const token = getStoredAuthToken();
       if (!token) return;
-      const response = await fetch(
-        `${getPubSubBase()}/subscribe?topic=amsstores1_AMSSTORES1-Nano`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
+      
+      // Read apiname and robotname from localStorage
+      const apiname = localStorage.getItem("api_name") || "";
+      const robotname = localStorage.getItem("robot_name") || "";
+      
+      if (!apiname || !robotname) {
+        console.error("Missing apiname or robotname in localStorage");
+        setLoading(false);
+        return;
+      }
+      
+      // Construct dynamic endpoint: https://[apiname].leapmile.com/pubsub/subscribe?topic=apiname_robotname
+      const endpoint = `https://${apiname}.leapmile.com/pubsub/subscribe?topic=${apiname}_${robotname}`;
+      
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
         },
-      );
+      });
 
       const data = await response.json();
 
