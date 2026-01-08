@@ -150,12 +150,54 @@ const Racks = () => {
     }
   };
 
-  const sortSlotsByIdDescending = (slots: Slot[]) => {
+  // Custom sort for S-1-0-X-Y pattern: order as 2-0, 1-0, 0-0 from top to bottom
+  const sortS10Pattern = (slots: Slot[]) => {
+    const s10Pattern = /^S-1-0-(\d+)-(\d+)$/;
+    const orderMap: Record<string, number> = {
+      "2-0": 0,
+      "1-0": 1,
+      "0-0": 2,
+    };
+
     return [...slots].sort((a, b) => {
-      // Extract last two characters and parse as number (e.g., A12 → 12)
+      const matchA = a.slot_id.match(s10Pattern);
+      const matchB = b.slot_id.match(s10Pattern);
+
+      // If both match S-1-0-X-Y pattern, sort by defined order
+      if (matchA && matchB) {
+        const keyA = `${matchA[1]}-${matchA[2]}`;
+        const keyB = `${matchB[1]}-${matchB[2]}`;
+        const orderA = orderMap[keyA] ?? 999;
+        const orderB = orderMap[keyB] ?? 999;
+        return orderA - orderB;
+      }
+
+      // If only one matches, keep the matching one in its position
+      if (matchA) return -1;
+      if (matchB) return 1;
+
+      // For non-matching slots, use descending order by last two digits
       const aNum = parseInt(a.slot_id.slice(-2)) || 0;
       const bNum = parseInt(b.slot_id.slice(-2)) || 0;
-      return bNum - aNum; // Descending order
+      return bNum - aNum;
+    });
+  };
+
+  const sortSlotsByIdDescending = (slots: Slot[]) => {
+    // First check if any slots match S-1-0-X-Y pattern
+    const s10Pattern = /^S-1-0-\d+-\d+$/;
+    const hasS10Slots = slots.some(slot => s10Pattern.test(slot.slot_id));
+
+    // If S-1-0-X-Y pattern slots exist, use the special sorting
+    if (hasS10Slots) {
+      return sortS10Pattern(slots);
+    }
+
+    // Default: sort by last two digits descending
+    return [...slots].sort((a, b) => {
+      const aNum = parseInt(a.slot_id.slice(-2)) || 0;
+      const bNum = parseInt(b.slot_id.slice(-2)) || 0;
+      return bNum - aNum;
     });
   };
 
