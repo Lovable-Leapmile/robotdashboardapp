@@ -356,7 +356,7 @@ const Racks = () => {
                 <div
                   key={index}
                   onClick={() => handleRackSelect(index)}
-                  className={`flex items-center justify-center font-bold text-sm sm:text-base transition-all duration-200 cursor-pointer w-10 h-10 sm:w-12 sm:h-12 rounded-lg ${
+                  className={`flex items-center justify-center font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer w-8 h-8 sm:w-10 sm:h-10 rounded-lg ${
                     selectedRack === index 
                       ? "bg-primary-foreground text-primary border-2 border-primary shadow-lg scale-110" 
                       : "bg-primary text-primary-foreground hover:scale-105 hover:shadow-md"
