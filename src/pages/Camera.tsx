@@ -39,8 +39,8 @@ const Camera = () => {
   }, []);
 
   useEffect(() => {
-    // Filter valid tasks - only show TID- prefixed ones
-    let validTasks = tasks.filter((task) => task.task_id && task.task_id.startsWith("TID-"));
+    // Filter valid tasks (exclude null/undefined task_ids)
+    let validTasks = tasks.filter((task) => task.task_id);
 
     // Apply search filter
     if (searchQuery.trim() !== "") {
