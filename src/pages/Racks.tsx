@@ -344,10 +344,10 @@ const Racks = () => {
     <div className="min-h-screen" style={{ backgroundColor: "#fafafa" }}>
       <AppHeader selectedTab="Racks" />
 
-      <main className="p-2 sm:p-8">
+      <main className="p-2 sm:p-6">
         {/* Rack selector with better spacing */}
         <div className="flex justify-center mb-8">
-          <div className="bg-card rounded-xl border border-border p-3 shadow-md">
+          <div className="bg-card rounded-l border border-border p-3 shadow-md">
             <div className="flex flex-wrap gap-4 sm:gap-5 justify-center">
               {Array.from({ length: numRacks }, (_, index) => (
                 <div
