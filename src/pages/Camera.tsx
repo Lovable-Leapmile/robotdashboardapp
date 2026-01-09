@@ -40,16 +40,16 @@ const Camera = () => {
   }, []);
 
   useEffect(() => {
-    // Filter to only show task IDs starting with TID- (exclude null/undefined)
-    let tidTasks = tasks.filter((task) => task.task_id && task.task_id.startsWith("TID-"));
+    // Filter to only show valid task IDs (exclude null/undefined)
+    let validTasks = tasks.filter((task) => task.task_id);
 
     // Apply search filter
     if (searchQuery.trim() !== "") {
-      tidTasks = tidTasks.filter((task) => task.task_id.toLowerCase().includes(searchQuery.toLowerCase()));
+      validTasks = validTasks.filter((task) => task.task_id.toLowerCase().includes(searchQuery.toLowerCase()));
     }
 
     // Apply sorting
-    const sortedTasks = [...tidTasks].sort((a, b) => {
+    const sortedTasks = [...validTasks].sort((a, b) => {
       switch (sortOption) {
         case "task_asc":
           return a.task_id.localeCompare(b.task_id);
