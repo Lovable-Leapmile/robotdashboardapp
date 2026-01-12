@@ -128,7 +128,7 @@ const Index = () => {
       </div>
 
       {/* Login Form Container */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen py-8">
+      <div className="relative z-10 flex items-center justify-center min-h-screen py-8 animate-fade-in">
         <LoginForm />
       </div>
     </div>
