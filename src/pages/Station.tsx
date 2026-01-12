@@ -21,7 +21,7 @@ interface SlotData {
   slot_name: string;
   tags: string[] | null;
   slot_height: number;
-  status: string;
+  slot_status: string;
   updated_at: string;
 }
 
@@ -81,7 +81,7 @@ const Station = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "status",
+      field: "slot_status",
       headerName: "Status",
       sortable: true,
       filter: true,
