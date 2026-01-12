@@ -5,7 +5,7 @@ import backgroundImage from "@/assets/dashboard_login_bg.png";
 import { isApiConfigured, getStoredApiConfig } from "@/lib/apiConfig";
 import { getStoredAuthToken } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
+
 
 const Index = () => {
   const [showApiModal, setShowApiModal] = useState(false);
@@ -120,9 +120,8 @@ const Index = () => {
           variant="outline"
           size="sm"
           onClick={handleChangeApiName}
-          className="bg-white/90 hover:bg-white text-gray-700 hover:text-gray-700 border-gray-200 shadow-md backdrop-blur-sm hover-scale"
+          className="bg-white/90 hover:bg-white text-gray-700 hover:text-gray-700 border-gray-200 shadow-md backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:shadow-lg"
         >
-          <Settings className="w-3 h-3 mr-1.5" />
           Change API
         </Button>
       </div>
