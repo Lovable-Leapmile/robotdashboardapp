@@ -401,6 +401,12 @@ const Home = () => {
                           </span>
                         </div>
                         <div className="flex justify-between text-muted-foreground">
+                          <span>Depth:</span>
+                          <span className="font-medium text-foreground">
+                            {shuttleState.store_depth !== null ? shuttleState.store_depth : "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-muted-foreground">
                           <span>Distance:</span>
                           <span className="font-medium text-foreground">{totalDistance} racks</span>
                         </div>
