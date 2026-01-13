@@ -343,12 +343,12 @@ const Home = () => {
                 <div className="flex gap-2 sm:gap-[10px]">
                   {Array.from({ length: robotNumDepths }, (_, depthIdx) => (
                     <div key={`row1-depth${depthIdx}`} className="flex flex-col gap-2 sm:gap-[10px]">
-                      {/* Depth label at top of each column */}
+                      {/* Depth label at top of each column - Row 1 shows reversed (Depth 1 left, Depth 0 right) */}
                       <div 
                         className="text-[10px] font-medium text-center text-muted-foreground mb-1"
                         style={{ minHeight: "14px" }}
                       >
-                        Depth {depthIdx}
+                        Depth {robotNumDepths - 1 - depthIdx}
                       </div>
                       {Array.from({ length: robotNumRacks }, (_, rackIdx) => (
                         <div
