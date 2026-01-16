@@ -39,7 +39,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   // Use the PubSub hook for real-time shuttle tracking
-  const { shuttleState, isEmptyOrError } = useShuttlePubSub();
+  const { shuttleState } = useShuttlePubSub();
 
   // Track previous rack position for animation
   const prevRackRef = useRef<number | null>(null);
@@ -537,40 +537,26 @@ const Home = () => {
                   <span>Row 0</span>
                   <span className="text-[10px] font-medium text-muted-foreground">D-1</span>
                 </div>
-                {isEmptyOrError ? (
-                  <div className="flex items-center justify-center">
-                    <img
-                      src={esLeft}
-                      alt="Rack 0 placeholder"
-                      style={{
-                        width: "75px",
-                        height: "auto",
-                        objectFit: "contain",
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div className="flex gap-2 sm:gap-[10px]">
-                    {Array.from({ length: robotNumDepths }, (_, depthIdx) => (
-                      <div key={`row0-depth${depthIdx}`} className="flex flex-col gap-2 sm:gap-[10px]">
-                        {Array.from({ length: robotNumRacks }, (_, rackIdx) => (
-                          <div
-                            key={`row0-depth${depthIdx}-rack${rackIdx}`}
-                            className={`flex items-center justify-center text-xs sm:text-sm font-medium w-[60px] h-[22px] sm:w-[75px] sm:h-[25px] ${isSlotHighlighted(0, rackIdx, depthIdx) ? "animate-pulse-glow" : ""}`}
-                            style={{
-                              ...getSlotHighlightStyles(0, rackIdx, depthIdx),
-                              borderRadius: "4px",
-                              color: "#351c75",
-                              transition: "background-color 0.3s ease-in-out, border 0.3s ease-in-out",
-                            }}
-                          >
-                            {rackIdx}
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className="flex gap-2 sm:gap-[10px]">
+                  {Array.from({ length: robotNumDepths }, (_, depthIdx) => (
+                    <div key={`row0-depth${depthIdx}`} className="flex flex-col gap-2 sm:gap-[10px]">
+                      {Array.from({ length: robotNumRacks }, (_, rackIdx) => (
+                        <div
+                          key={`row0-depth${depthIdx}-rack${rackIdx}`}
+                          className={`flex items-center justify-center text-xs sm:text-sm font-medium w-[60px] h-[22px] sm:w-[75px] sm:h-[25px] ${isSlotHighlighted(0, rackIdx, depthIdx) ? "animate-pulse-glow" : ""}`}
+                          style={{
+                            ...getSlotHighlightStyles(0, rackIdx, depthIdx),
+                            borderRadius: "4px",
+                            color: "#351c75",
+                            transition: "background-color 0.3s ease-in-out, border 0.3s ease-in-out",
+                          }}
+                        >
+                          {rackIdx}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
               </div>
             </div>
