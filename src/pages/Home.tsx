@@ -446,7 +446,7 @@ const Home = () => {
                   />
 
                 {/* Single animated shuttle */}
-                {isShuttleVisible() && (
+                {isShuttleVisible() ? (
                   <div
                     ref={shuttleRef}
                     className="flex flex-col items-center justify-center"
@@ -525,6 +525,30 @@ const Home = () => {
                         </span>
                       )}
                     </div>
+                  </div>
+                ) : (
+                  /* Fallback: Show es-left.png on first rack when API returns null/404 */
+                  <div
+                    className="flex flex-col items-center justify-center"
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: 0,
+                      transform: `translate(-50%, ${calculateYPosition(0)}px)`,
+                      height: "25px",
+                      zIndex: 1,
+                    }}
+                  >
+                    <img
+                      src={esLeft}
+                      alt="shuttle"
+                      className="relative z-10"
+                      style={{
+                        width: "60px",
+                        height: "25px",
+                        objectFit: "contain",
+                      }}
+                    />
                   </div>
                 )}
                 </div>
