@@ -315,18 +315,18 @@ const Home = () => {
 
 
   return (
-    <div className="flex flex-col lg:h-screen lg:max-h-screen lg:overflow-hidden" style={{ backgroundColor: "#fafafa" }}>
+    <div className="flex flex-col" style={{ backgroundColor: "#fafafa" }}>
       <AppHeader selectedTab="Robot" />
 
-      <main className="flex-1 px-2 sm:px-4 py-2 lg:overflow-hidden">
+      <main className="flex-1 px-2 sm:px-4 py-2">
         {/* Content row */}
-        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4 lg:h-full">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4">
           {/* Rack visualization */}
           <div className="flex flex-col flex-shrink-0">
             {/* Scrollable rack container */}
             <div 
               ref={rackContainerRef}
-              className="lg:overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-hide rounded-lg mx-auto lg:mx-0 lg:max-h-[calc(100vh-140px)]"
+              className="overflow-x-hidden scroll-smooth scrollbar-hide rounded-lg mx-auto lg:mx-0"
               style={{ 
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
