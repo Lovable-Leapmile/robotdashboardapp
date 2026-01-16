@@ -106,7 +106,6 @@ const Extremes = () => {
       }
 
       const data = await response.json();
-      console.log("Fetched extremes:", data?.records?.length);
       setTotalCount(data.count || 0);
       setRowData(data.records || []);
     } catch (error) {
@@ -115,7 +114,6 @@ const Extremes = () => {
         description: "Failed to load extremes data",
         variant: "destructive",
       });
-      console.error("Error fetching extremes:", error);
     } finally {
       setLoading(false);
     }

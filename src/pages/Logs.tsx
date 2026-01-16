@@ -286,7 +286,6 @@ const Logs = () => {
       const robotname = localStorage.getItem("robot_name") || "";
       
       if (!apiname || !robotname) {
-        console.error("Missing apiname or robotname in localStorage");
         setLoading(false);
         return;
       }
@@ -306,17 +305,15 @@ const Logs = () => {
 
       // Handle "no records found" as a normal case, not an error
       if (response.status === 404 && data.message === "no records found") {
-        console.log("No logs found");
         setTotalCount(0);
         setRowData([]);
         return;
       }
 
       if (!response.ok) {
-        throw new Error("Failed to fetch logs data");
+        throw new Error("Failed to load logs");
       }
 
-      console.log("Fetched logs:", data?.records?.length);
       setTotalCount(data.count || 0);
       setRowData(data.records || []);
     } catch (error) {
@@ -325,7 +322,6 @@ const Logs = () => {
         description: "Failed to load logs data",
         variant: "destructive",
       });
-      console.error("Error fetching logs:", error);
     } finally {
       setLoading(false);
     }

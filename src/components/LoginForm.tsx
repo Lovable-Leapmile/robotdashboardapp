@@ -36,9 +36,17 @@ const LoginForm = () => {
     
     try {
       const userBase = getUserBase();
-      const response = await fetch(
-        `${userBase}/validate?user_phone=${mobileNumber}&password=${password}`
-      );
+      // Use POST with JSON body to avoid exposing credentials in URL
+      const response = await fetch(`${userBase}/validate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          user_phone: mobileNumber, 
+          password: password 
+        }),
+      });
       const data = await response.json();
 
       if (response.ok && data.user_id && data.user_name) {

@@ -121,10 +121,8 @@ export const useShuttlePubSub = () => {
       }
 
       const data = await response.json();
-      console.log("PubSub API Response:", data);
 
       if (!data.records || data.records.length === 0) {
-        console.log("No records in PubSub response");
         return;
       }
 
@@ -133,9 +131,6 @@ export const useShuttlePubSub = () => {
       const secondRecord = data.records.length > 1 
         ? parseMessage(data.records[1]) 
         : null;
-
-      console.log("Parsed First Record:", firstRecord);
-      if (secondRecord) console.log("Parsed Second Record:", secondRecord);
 
       // STEP 2: Initial data storage from first record
       const initialData = {
@@ -153,7 +148,6 @@ export const useShuttlePubSub = () => {
         const storeFlow = () => {
           // Action 1: Store → Start
           if (firstRecord.action === "store" && firstRecord.status === "start") {
-            console.log("Store Start detected");
             newState = {
               ...newState,
               store_row: firstRecord.row,
@@ -169,7 +163,6 @@ export const useShuttlePubSub = () => {
           // Action 2: Store → Stop
           if (firstRecord.action === "store" && firstRecord.status === "stop") {
             if (firstRecord.success) {
-              console.log("Store Stop Success");
               newState = {
                 ...newState,
                 store_row: firstRecord.row,
@@ -181,7 +174,6 @@ export const useShuttlePubSub = () => {
                 destination_name: firstRecord.slot,
               };
             } else {
-              console.log("Store Stop Failed");
               newState = {
                 ...newState,
                 store_row: -1,
@@ -201,7 +193,6 @@ export const useShuttlePubSub = () => {
           // Action 1: Retrieve → Stop
           if (firstRecord.action === "retrieve" && firstRecord.status === "stop") {
             if (firstRecord.success) {
-              console.log("Retrieve Stop Success");
               newState = {
                 ...newState,
                 store_row: firstRecord.row,
@@ -213,7 +204,6 @@ export const useShuttlePubSub = () => {
                 destination_name: firstRecord.slot,
               };
             } else if (secondRecord) {
-              console.log("Retrieve Stop Failed - Using second record");
               newState = {
                 ...newState,
                 store_row: secondRecord.row,
@@ -230,7 +220,6 @@ export const useShuttlePubSub = () => {
           // Action 2: Retrieve → Start
           if (firstRecord.action === "retrieve" && firstRecord.status === "start") {
             if (firstRecord.success) {
-              console.log("Retrieve Start Success");
               // First clear, then set new values
               newState = {
                 ...newState,
@@ -265,7 +254,6 @@ export const useShuttlePubSub = () => {
       if (err instanceof Error && err.name === "AbortError") {
         return; // Ignore abort errors
       }
-      console.error("Error fetching PubSub data:", err);
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setIsLoading(false);
