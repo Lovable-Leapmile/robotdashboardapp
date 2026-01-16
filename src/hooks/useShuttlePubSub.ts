@@ -87,6 +87,7 @@ export const useShuttlePubSub = () => {
   const [shuttleState, setShuttleState] = useState<ShuttleState>(initialState);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isEmptyOrError, setIsEmptyOrError] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const fetchPubSubData = useCallback(async () => {
@@ -116,6 +117,13 @@ export const useShuttlePubSub = () => {
         }
       );
 
+      // Handle 404 response
+      if (response.status === 404) {
+        console.log("Shuttle API returned 404");
+        setIsEmptyOrError(true);
+        return;
+      }
+
       if (!response.ok) {
         throw new Error("Failed to fetch PubSub data");
       }
@@ -123,10 +131,15 @@ export const useShuttlePubSub = () => {
       const data = await response.json();
       console.log("PubSub API Response:", data);
 
+      // Handle null or empty records
       if (!data.records || data.records.length === 0) {
         console.log("No records in PubSub response");
+        setIsEmptyOrError(true);
         return;
       }
+
+      // Valid data received - clear empty/error state
+      setIsEmptyOrError(false);
 
       // Parse first and second records
       const firstRecord = parseMessage(data.records[0]);
@@ -291,6 +304,7 @@ export const useShuttlePubSub = () => {
     shuttleState,
     isLoading,
     error,
+    isEmptyOrError,
     refetch: fetchPubSubData,
   };
 };
