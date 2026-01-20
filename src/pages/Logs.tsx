@@ -58,7 +58,7 @@ const Logs = () => {
               ? JSON.stringify(message).split("\\n")[0]
               : String(message || "N/A"),
         Action:
-          typeof message === "object" && message?.metadata?.station_slot_id ? message.metadata.station_slot_id : "N/A",
+          typeof message === "object" && message?.action ? message.action : "N/A",
         Status: typeof message === "object" && message?.status ? message.status : "N/A",
         "Tray ID": typeof message === "object" && message?.metadata?.tray_id ? message.metadata.tray_id : "N/A",
         "Slot ID": typeof message === "object" && message?.metadata?.slot_id ? message.metadata.slot_id : "N/A",
@@ -199,8 +199,8 @@ const Logs = () => {
       flex: 1,
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
-        if (typeof params.value === "object" && params.value.metadata?.station_slot_id) {
-          return params.value.metadata.station_slot_id;
+        if (typeof params.value === "object" && params.value.action) {
+          return params.value.action;
         }
         return "N/A";
       },
