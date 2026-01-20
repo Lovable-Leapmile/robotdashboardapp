@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { getPubSubBase } from "@/lib/api";
 import { getStoredAuthToken } from "@/lib/auth";
+import { getStoredApiConfig } from "@/lib/apiConfig";
 import noRecordsImage from "@/assets/no_records.png";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -281,14 +282,16 @@ const Logs = () => {
       const token = getStoredAuthToken();
       if (!token) return;
       
-      // Read apiname and robotname from localStorage
-      const apiname = localStorage.getItem("api_name") || "";
+      // Read apiname from api_config and robotname from localStorage
+      const apiConfig = getStoredApiConfig();
       const robotname = localStorage.getItem("robotname") || "";
       
-      if (!apiname || !robotname) {
+      if (!apiConfig || !robotname) {
         setLoading(false);
         return;
       }
+      
+      const apiname = apiConfig.apiName;
       
       // Construct dynamic endpoint: https://[apiname].leapmile.com/pubsub/subscribe?topic=apiname_robotname
       const endpoint = `https://${apiname}.leapmile.com/pubsub/subscribe?topic=${apiname}_${robotname}`;
