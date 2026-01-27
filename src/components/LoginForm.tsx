@@ -191,6 +191,19 @@ const LoginForm = () => {
           </Button>
         </form>
       </div>
+
+      {/* Footer */}
+      <div className="mt-6 text-center text-xs text-gray-500 space-y-1">
+        <p>© 2024 All Rights Reserved | Leapmile Logistics Pvt.Ltd</p>
+        <a 
+          href="https://leapmile.com/terms-and-privacy" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-primary hover:underline"
+        >
+          Terms and Condition & Privacy Policy / Cookies Policy
+        </a>
+      </div>
     </div>
   );
 };
