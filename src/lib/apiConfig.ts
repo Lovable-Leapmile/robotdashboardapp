@@ -1,3 +1,5 @@
+import { getValue, setValue, removeValue } from "./cookieStorage";
+
 const API_CONFIG_KEY = "api_config";
 
 export interface ApiConfig {
@@ -5,13 +7,14 @@ export interface ApiConfig {
   baseUrl: string;
 }
 
+/**
+ * Get stored API config from cookies (primary) or localStorage (fallback)
+ */
 export const getStoredApiConfig = (): ApiConfig | null => {
   try {
-    const stored = localStorage.getItem(API_CONFIG_KEY);
-    if (!stored) return null;
-    const parsed = JSON.parse(stored) as ApiConfig;
-    if (parsed.apiName && parsed.baseUrl) {
-      return parsed;
+    const config = getValue<ApiConfig>(API_CONFIG_KEY);
+    if (config && config.apiName && config.baseUrl) {
+      return config;
     }
     return null;
   } catch {
@@ -19,16 +22,22 @@ export const getStoredApiConfig = (): ApiConfig | null => {
   }
 };
 
+/**
+ * Store API config in both cookies and localStorage
+ */
 export const storeApiConfig = (apiName: string): ApiConfig => {
   const trimmed = apiName.trim();
   const baseUrl = `https://${trimmed}.leapmile.com`;
   const config: ApiConfig = { apiName: trimmed, baseUrl };
-  localStorage.setItem(API_CONFIG_KEY, JSON.stringify(config));
+  setValue(API_CONFIG_KEY, config);
   return config;
 };
 
+/**
+ * Clear API config from both cookies and localStorage
+ */
 export const clearApiConfig = (): void => {
-  localStorage.removeItem(API_CONFIG_KEY);
+  removeValue(API_CONFIG_KEY);
 };
 
 export const isApiConfigured = (): boolean => {
