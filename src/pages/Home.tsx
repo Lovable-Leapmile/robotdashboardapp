@@ -6,7 +6,6 @@ import { DashboardCards } from "@/components/DashboardCards";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { useShuttlePubSub } from "@/hooks/useShuttlePubSub";
 import { getStoredAuthToken } from "@/lib/auth";
-import { secureStorage } from "@/lib/encryptedCookieStorage";
 import { getRobotManagerBase } from "@/lib/api";
 import {
   Tooltip,
@@ -203,8 +202,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const storedUserName = secureStorage.getItem("user_name");
-    const storedUserId = secureStorage.getItem("user_id");
+    const storedUserName = localStorage.getItem("user_name");
+    const storedUserId = localStorage.getItem("user_id");
 
     if (!storedUserName || !storedUserId) {
       navigate("/");
@@ -247,9 +246,9 @@ const Home = () => {
         setRobotNumDepths(robotConfig.robot_num_depths || 0);
         setRobotNumRows(robotConfig.robot_num_rows || 2);
         
-        // Store robot_name in encrypted cookies for dynamic API calls
+        // Store robot_name in localStorage for dynamic API calls
         if (robotConfig.robot_name) {
-          secureStorage.setItem("robotname", robotConfig.robot_name);
+          localStorage.setItem("robotname", robotConfig.robot_name);
         }
       }
     } catch (error) {

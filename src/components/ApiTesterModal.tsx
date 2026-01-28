@@ -82,10 +82,11 @@ const ApiTesterModal = ({ open, onOpenChange }: ApiTesterModalProps) => {
       // Since no-cors doesn't give us status, we assume success if no error thrown
       setTestResult("success");
       
-      // Store the new API configuration using storeApiConfig
+      // Store the new API configuration
       const apiNamePart = trimmedApi.split(".")[0];
-      const { storeApiConfig } = await import("@/lib/apiConfig");
-      storeApiConfig(apiNamePart);
+      const API_CONFIG_KEY = "api_config";
+      const config = { apiName: apiNamePart, baseUrl: apiUrl };
+      localStorage.setItem(API_CONFIG_KEY, JSON.stringify(config));
 
       toast({
         title: "API Configured",

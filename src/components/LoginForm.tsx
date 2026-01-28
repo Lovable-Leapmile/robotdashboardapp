@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { storeAuthToken } from "@/lib/auth";
 import { getUserBase } from "@/lib/api";
-import { secureStorage } from "@/lib/encryptedCookieStorage";
 import { Eye, EyeOff } from "lucide-react";
 import loginIllustration from "@/assets/login.gif";
 import logo from "@/assets/logo.png";
@@ -44,9 +43,9 @@ const LoginForm = () => {
       const data = await response.json();
 
       if (response.ok && data.user_id && data.user_name) {
-        // Store user data in encrypted cookies
-        secureStorage.setItem("user_id", data.user_id);
-        secureStorage.setItem("user_name", data.user_name);
+        // Store user data
+        localStorage.setItem("user_id", data.user_id);
+        localStorage.setItem("user_name", data.user_name);
 
         // Store token (if API returns it) so all pages can use the same token after login
         const possibleToken =
@@ -57,7 +56,7 @@ const LoginForm = () => {
 
         // Store login timestamp for 7-day session expiration
         const loginTimestamp = Date.now();
-        secureStorage.setItem("login_timestamp", loginTimestamp.toString());
+        localStorage.setItem("login_timestamp", loginTimestamp.toString());
 
         navigate("/home");
       } else {

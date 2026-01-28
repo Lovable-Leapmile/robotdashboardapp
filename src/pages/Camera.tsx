@@ -31,7 +31,10 @@ const Camera = () => {
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [sortOption, setSortOption] = useState<SortOption>("latest");
+  const [sortOption, setSortOption] = useState<SortOption>(() => {
+    const saved = localStorage.getItem(FILTER_STORAGE_KEY);
+    return (saved as SortOption) || "latest";
+  });
 
   useEffect(() => {
     fetchTasks();
@@ -67,6 +70,7 @@ const Camera = () => {
   const handleSortChange = (value: string) => {
     const newSort = value as SortOption;
     setSortOption(newSort);
+    localStorage.setItem(FILTER_STORAGE_KEY, newSort);
   };
 
   const fetchTasks = async () => {

@@ -8,7 +8,6 @@ import { ColDef, ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { apiGet, getRobotManagerBase, withQuery } from "@/lib/api";
-import { secureStorage } from "@/lib/encryptedCookieStorage";
 import noRecordsImage from "@/assets/no_records.png";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
@@ -112,8 +111,8 @@ const Completed = () => {
   ];
 
   useEffect(() => {
-    const storedUserName = secureStorage.getItem("user_name");
-    const storedUserId = secureStorage.getItem("user_id");
+    const storedUserName = localStorage.getItem("user_name");
+    const storedUserId = localStorage.getItem("user_id");
 
     if (!storedUserName || !storedUserId) {
       navigate("/");

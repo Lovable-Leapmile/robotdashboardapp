@@ -11,7 +11,6 @@ import { useAuthSession } from "@/hooks/useAuthSession";
 import { getPubSubBase } from "@/lib/api";
 import { getStoredAuthToken } from "@/lib/auth";
 import { getStoredApiConfig } from "@/lib/apiConfig";
-import { secureStorage } from "@/lib/encryptedCookieStorage";
 import noRecordsImage from "@/assets/no_records.png";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -265,8 +264,8 @@ const Logs = () => {
   ];
 
   useEffect(() => {
-    const storedUserName = secureStorage.getItem("user_name");
-    const storedUserId = secureStorage.getItem("user_id");
+    const storedUserName = localStorage.getItem("user_name");
+    const storedUserId = localStorage.getItem("user_id");
 
     if (!storedUserName || !storedUserId) {
       navigate("/");
@@ -283,9 +282,9 @@ const Logs = () => {
       const token = getStoredAuthToken();
       if (!token) return;
       
-      // Read apiname from api_config and robotname from encrypted cookies
+      // Read apiname from api_config and robotname from localStorage
       const apiConfig = getStoredApiConfig();
-      const robotname = secureStorage.getItem("robotname") || "";
+      const robotname = localStorage.getItem("robotname") || "";
       
       if (!apiConfig || !robotname) {
         setLoading(false);

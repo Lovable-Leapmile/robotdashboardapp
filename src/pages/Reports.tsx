@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { apiGet, getNanostoreBase, getRobotManagerBase, withQuery } from "@/lib/api";
 import noRecordsImage from "@/assets/no_records.png";
-import { secureStorage } from "@/lib/encryptedCookieStorage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RefreshCw, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -528,8 +527,8 @@ const Reports = () => {
   }, [reportType, toast, navigate]);
 
   useEffect(() => {
-    const storedUserName = secureStorage.getItem("user_name");
-    const storedUserId = secureStorage.getItem("user_id");
+    const storedUserName = localStorage.getItem("user_name");
+    const storedUserId = localStorage.getItem("user_id");
 
     if (!storedUserName || !storedUserId) {
       navigate("/");
