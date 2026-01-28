@@ -35,7 +35,7 @@ const App = () => {
   const [apiConfigured, setApiConfigured] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Run migration from localStorage to cookies once on app load
+    // Run one-time migration from localStorage to cookies on app load
     migrateLocalStorageToCookies();
     
     // Check if API is already configured on mount

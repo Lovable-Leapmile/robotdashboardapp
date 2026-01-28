@@ -48,7 +48,7 @@ const LoginForm = () => {
         const loginTimestamp = Date.now();
         setValue("login_timestamp", loginTimestamp.toString());
 
-        // Store user data in both cookies and localStorage
+        // Store user data in cookies ONLY (single source of truth)
         setValue("user_id", data.user_id);
         setValue("user_name", data.user_name);
 

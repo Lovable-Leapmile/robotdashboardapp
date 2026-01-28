@@ -126,7 +126,7 @@ const Racks = () => {
 
       const data = await response.json();
 
-      // Store robot configuration in cookies (single source of truth)
+      // Store robot configuration in cookies ONLY (single source of truth)
       if (data.records && data.records.length > 0) {
         const robotConfig = data.records[0];
         const numRacksValue = robotConfig.robot_num_racks || 0;
@@ -210,7 +210,7 @@ const Racks = () => {
 
   const handleRackSelect = (index: number) => {
     setSelectedRack(index);
-    // Store in cookies only (single source of truth)
+    // Store in cookies ONLY (single source of truth)
     setValue("selected_rack", index.toString());
     setSelectedSlotId(null);
     setSlotDetails(null);

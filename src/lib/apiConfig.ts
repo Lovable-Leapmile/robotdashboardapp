@@ -8,7 +8,7 @@ export interface ApiConfig {
 }
 
 /**
- * Get stored API config from cookies/localStorage
+ * Get stored API config from cookies ONLY (single source of truth)
  */
 export const getStoredApiConfig = (): ApiConfig | null => {
   try {
@@ -23,14 +23,13 @@ export const getStoredApiConfig = (): ApiConfig | null => {
 };
 
 /**
- * Store API config
+ * Store API config in cookies ONLY (single source of truth)
  */
 export const storeApiConfig = (apiName: string): ApiConfig => {
   const trimmed = apiName.trim();
   const baseUrl = `https://${trimmed}.leapmile.com`;
   const config: ApiConfig = { apiName: trimmed, baseUrl };
   
-  // Store using setValue which handles both cookies and localStorage
   setValue(API_CONFIG_KEY, config);
   
   return config;

@@ -107,7 +107,7 @@ export const useShuttlePubSub = () => {
     try {
       setIsLoading(true);
       
-      // Get dynamic apiname and robotname from cookies only
+      // Get dynamic apiname and robotname from cookies ONLY (single source of truth)
       const apiConfig = getStoredApiConfig();
       const robotname = getRawValue("robotname");
       

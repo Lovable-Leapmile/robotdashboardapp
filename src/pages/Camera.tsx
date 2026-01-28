@@ -33,7 +33,7 @@ const Camera = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [sortOption, setSortOption] = useState<SortOption>(() => {
-    // Read from cookies only (single source of truth)
+    // Read from cookies ONLY (single source of truth)
     const saved = getRawValue(FILTER_STORAGE_KEY);
     return (saved as SortOption) || "latest";
   });
@@ -72,7 +72,7 @@ const Camera = () => {
   const handleSortChange = (value: string) => {
     const newSort = value as SortOption;
     setSortOption(newSort);
-    // Store in cookies only (single source of truth)
+    // Store in cookies ONLY (single source of truth)
     setValue(FILTER_STORAGE_KEY, newSort);
   };
 
