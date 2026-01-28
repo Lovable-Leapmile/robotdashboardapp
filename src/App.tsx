@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { isApiConfigured } from "@/lib/apiConfig";
+import { migrateLocalStorageToCookies } from "@/lib/cookieStorage";
 import ApiConfigModal from "@/components/ApiConfigModal";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
@@ -34,6 +35,9 @@ const App = () => {
   const [apiConfigured, setApiConfigured] = useState<boolean | null>(null);
 
   useEffect(() => {
+    // Run migration from localStorage to cookies once on app load
+    migrateLocalStorageToCookies();
+    
     // Check if API is already configured on mount
     setApiConfigured(isApiConfigured());
   }, []);
