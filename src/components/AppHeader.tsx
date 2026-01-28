@@ -3,6 +3,7 @@ import { ScrollText, Activity, LogOut, Camera, Menu, X, Home, ClipboardList, Vid
 import headerLogo from "@/assets/header-logo.png";
 import { useState } from "react";
 import html2canvas from "html2canvas";
+import { clearAllEncryptedCookies } from "@/lib/encryptedCookieStorage";
 import {
   Tooltip,
   TooltipContent,
@@ -44,16 +45,8 @@ const AppHeader = ({ selectedTab, isTasksPage, activeTaskTab, isMonitorPage, isC
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    // Clear all localStorage
-    localStorage.clear();
-    // Clear all sessionStorage
-    sessionStorage.clear();
-    // Clear all cookies
-    document.cookie.split(";").forEach((cookie) => {
-      const eqPos = cookie.indexOf("=");
-      const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
-      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-    });
+    // Clear all encrypted cookies
+    clearAllEncryptedCookies();
     navigate("/");
   };
 
@@ -423,9 +416,11 @@ const AppHeader = ({ selectedTab, isTasksPage, activeTaskTab, isMonitorPage, isC
               Do you want to logout?
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="gap-2 sm:gap-4">
-            <AlertDialogCancel className="w-full sm:w-32">Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmLogout} className="w-full sm:w-32">Confirm</AlertDialogAction>
+          <AlertDialogFooter className="gap-2 sm:gap-0">
+            <AlertDialogCancel className="mt-0">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmLogout} style={{ backgroundColor: '#351C75' }}>
+              Logout
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

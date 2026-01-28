@@ -4,6 +4,7 @@ import ApiConfigModal from "@/components/ApiConfigModal";
 import backgroundImage from "@/assets/dashboard_login_bg.png";
 import { isApiConfigured, getStoredApiConfig } from "@/lib/apiConfig";
 import { getStoredAuthToken } from "@/lib/auth";
+import { secureStorage, clearAllEncryptedCookies } from "@/lib/encryptedCookieStorage";
 import { Button } from "@/components/ui/button";
 
 
@@ -20,19 +21,13 @@ const Index = () => {
 
     // Check if all auth-related data is missing
     const authToken = getStoredAuthToken();
-    const userId = localStorage.getItem("user_id");
-    const userName = localStorage.getItem("user_name");
-    const loginTimestamp = localStorage.getItem("login_timestamp");
+    const userId = secureStorage.getItem("user_id");
+    const userName = secureStorage.getItem("user_name");
+    const loginTimestamp = secureStorage.getItem("login_timestamp");
     const apiConfigured = isApiConfigured();
 
-    // Check cookies for any auth data
-    const cookies = document.cookie;
-    const hasAuthCookie = cookies.includes("token") || 
-                          cookies.includes("auth") || 
-                          cookies.includes("session");
-
     // If all auth data is missing AND API is not configured, show the modal
-    const noAuthData = !authToken && !userId && !userName && !loginTimestamp && !hasAuthCookie;
+    const noAuthData = !authToken && !userId && !userName && !loginTimestamp;
     
     if (noAuthData && !apiConfigured) {
       setShowApiModal(true);
@@ -55,18 +50,8 @@ const Index = () => {
   };
 
   const handleChangeApiName = () => {
-    // Clear all cookies
-    document.cookie.split(";").forEach((cookie) => {
-      const eqPos = cookie.indexOf("=");
-      const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
-      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-    });
-
-    // Clear localStorage
-    localStorage.clear();
-
-    // Clear sessionStorage
-    sessionStorage.clear();
+    // Clear all encrypted cookies
+    clearAllEncryptedCookies();
 
     // Clear the current API name so the textbox is empty
     setCurrentApiName("");
