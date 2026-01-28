@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { getRobotManagerBase } from "@/lib/api";
 import { getStoredAuthToken } from "@/lib/auth";
+import { secureStorage } from "@/lib/encryptedCookieStorage";
 import noRecordsImage from "@/assets/no_records.png";
 import { getDefaultGridProps, createDateColumnDef } from "@/lib/agGridUtils";
 
@@ -92,8 +93,8 @@ const Station = () => {
   ];
 
   useEffect(() => {
-    const storedUserName = localStorage.getItem("user_name");
-    const storedUserId = localStorage.getItem("user_id");
+    const storedUserName = secureStorage.getItem("user_name");
+    const storedUserId = secureStorage.getItem("user_id");
 
     if (!storedUserName || !storedUserId) {
       navigate("/");

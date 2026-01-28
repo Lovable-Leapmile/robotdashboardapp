@@ -5,6 +5,7 @@ import SlotDetailsPanel from "@/components/SlotDetailsPanel";
 import { useAuthSession } from "@/hooks/useAuthSession";
 import { getRobotManagerBase } from "@/lib/api";
 import { getStoredAuthToken } from "@/lib/auth";
+import { secureStorage } from "@/lib/encryptedCookieStorage";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import blockImg from "@/assets/block.png";
 import stationImg from "@/assets/station.png";
@@ -39,8 +40,8 @@ const Racks = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUserName = localStorage.getItem("user_name");
-    const storedUserId = localStorage.getItem("user_id");
+    const storedUserName = secureStorage.getItem("user_name");
+    const storedUserId = secureStorage.getItem("user_id");
 
     if (!storedUserName || !storedUserId) {
       navigate("/");
@@ -49,13 +50,13 @@ const Racks = () => {
 
     setUserName(storedUserName);
 
-    // Load selected rack from localStorage, default to 0
-    const storedSelectedRack = localStorage.getItem("selected_rack");
+    // Load selected rack from encrypted cookies, default to 0
+    const storedSelectedRack = secureStorage.getItem("selected_rack");
     if (storedSelectedRack !== null) {
       setSelectedRack(parseInt(storedSelectedRack));
     } else {
       setSelectedRack(0);
-      localStorage.setItem("selected_rack", "0");
+      secureStorage.setItem("selected_rack", "0");
     }
 
     fetchRobotConfig();
@@ -129,10 +130,10 @@ const Racks = () => {
         const robotConfig = data.records[0];
         const numRacksValue = robotConfig.robot_num_racks || 0;
 
-        localStorage.setItem("robot_num_rows", robotConfig.robot_num_rows?.toString() || "0");
-        localStorage.setItem("robot_num_racks", numRacksValue.toString());
-        localStorage.setItem("robot_num_slots", robotConfig.robot_num_slots?.toString() || "0");
-        localStorage.setItem("robot_num_depths", robotConfig.robot_num_depths?.toString() || "0");
+        secureStorage.setItem("robot_num_rows", robotConfig.robot_num_rows?.toString() || "0");
+        secureStorage.setItem("robot_num_racks", numRacksValue.toString());
+        secureStorage.setItem("robot_num_slots", robotConfig.robot_num_slots?.toString() || "0");
+        secureStorage.setItem("robot_num_depths", robotConfig.robot_num_depths?.toString() || "0");
 
         setNumRacks(numRacksValue);
 
@@ -208,7 +209,7 @@ const Racks = () => {
 
   const handleRackSelect = (index: number) => {
     setSelectedRack(index);
-    localStorage.setItem("selected_rack", index.toString());
+    secureStorage.setItem("selected_rack", index.toString());
     setSelectedSlotId(null);
     setSlotDetails(null);
   };
